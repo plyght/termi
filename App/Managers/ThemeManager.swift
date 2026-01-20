@@ -16,38 +16,55 @@ class ThemeManager: ObservableObject {
     }
 
     private init() {
+        print("🏗️  [ThemeManager] INIT - Initializing ThemeManager")
         loadPreferences()
+        print("✅ [ThemeManager] INIT - ThemeManager initialized")
     }
 
     func setTheme(_ theme: TerminalTheme) {
+        print("🎨 [ThemeManager] setTheme - Changing theme to: \(theme.name)")
         currentTheme = theme
         savePreferences()
+        print("✅ [ThemeManager] setTheme - Theme changed and saved")
     }
 
     func setFontSize(_ size: CGFloat) {
-        fontSize = max(8, min(32, size))
+        let clampedSize = max(8, min(32, size))
+        print("📏 [ThemeManager] setFontSize - Requested: \(size), Clamped: \(clampedSize)")
+        fontSize = clampedSize
         savePreferences()
+        print("✅ [ThemeManager] setFontSize - Font size changed and saved")
     }
 
     func setFont(_ fontName: String) {
+        print("🔤 [ThemeManager] setFont - Changing font to: \(fontName)")
         self.fontName = fontName
         savePreferences()
+        print("✅ [ThemeManager] setFont - Font changed and saved")
     }
 
     private func savePreferences() {
+        print("💾 [ThemeManager] savePreferences - Saving theme: \(currentTheme.name), fontSize: \(fontSize), font: \(fontName)")
         UserDefaults.standard.set(currentTheme.name, forKey: "terminalTheme")
         UserDefaults.standard.set(fontSize, forKey: "fontSize")
         UserDefaults.standard.set(fontName, forKey: "fontName")
+        print("✅ [ThemeManager] savePreferences - Preferences saved")
     }
 
     private func loadPreferences() {
+        print("📂 [ThemeManager] loadPreferences - Loading saved preferences")
         if let themeName = UserDefaults.standard.string(forKey: "terminalTheme"),
            let theme = TerminalTheme.allThemes.first(where: { $0.name == themeName }) {
+            print("🎨 [ThemeManager] loadPreferences - Found saved theme: \(themeName)")
             currentTheme = theme
+        } else {
+            print("🎨 [ThemeManager] loadPreferences - No saved theme, using default: \(currentTheme.name)")
         }
         let savedFontSize = UserDefaults.standard.double(forKey: "fontSize")
         fontSize = savedFontSize > 0 ? CGFloat(savedFontSize) : 14.0
+        print("📏 [ThemeManager] loadPreferences - Font size: \(fontSize)")
         fontName = UserDefaults.standard.string(forKey: "fontName") ?? "Menlo-Regular"
+        print("🔤 [ThemeManager] loadPreferences - Font name: \(fontName)")
     }
 }
 

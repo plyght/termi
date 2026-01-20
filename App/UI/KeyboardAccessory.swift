@@ -7,7 +7,11 @@ struct KeyboardAccessory: View {
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
+        let _ = print("⌨️  [KeyboardAccessory] BODY - Rendering")
+        let _ = print("📊 [KeyboardAccessory] BODY - Input focused: \(isInputFocused)")
+        let _ = print("📝 [KeyboardAccessory] BODY - Current input: '\(inputText)'")
+        
+        return VStack(spacing: 0) {
             SpecialKeysBar(session: session)
 
             HStack(spacing: 8) {
@@ -21,11 +25,16 @@ struct KeyboardAccessory: View {
                     .cornerRadius(8)
                     .focused($isInputFocused)
                     .onSubmit {
+                        print("↩️  [KeyboardAccessory] onSubmit - Submitting input: '\(inputText)'")
                         sendInput(inputText + "\n")
                         inputText = ""
                     }
+                    .onChange(of: inputText) { newValue in
+                        print("📝 [KeyboardAccessory] onChange - Input changed to: '\(newValue)'")
+                    }
 
                 Button(action: {
+                    print("🔘 [KeyboardAccessory] Button - Send button tapped")
                     sendInput(inputText + "\n")
                     inputText = ""
                 }, label: {
@@ -39,12 +48,17 @@ struct KeyboardAccessory: View {
             .background(themeManager.currentTheme.backgroundColor.opacity(0.95))
         }
         .onAppear {
+            print("👀 [KeyboardAccessory] onAppear - View appeared")
+            print("📊 [KeyboardAccessory] onAppear - Setting focus to true")
             isInputFocused = true
+            print("✅ [KeyboardAccessory] onAppear - Focus set")
         }
     }
 
     private func sendInput(_ text: String) {
+        print("📤 [KeyboardAccessory] sendInput - Sending: '\(text)' (\(text.count) chars)")
         session.sendInput(text)
+        print("✅ [KeyboardAccessory] sendInput - Sent to session")
     }
 }
 
@@ -63,10 +77,14 @@ struct SpecialKeysBar: View {
     ]
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        let _ = print("🎹 [SpecialKeysBar] BODY - Rendering special keys bar")
+        
+        return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(specialKeys, id: \.label) { key in
                     Button(action: {
+                        let hexValue = key.value.unicodeScalars.map { String(format: "%02X", $0.value) }.joined(separator: " ")
+                        print("🔘 [SpecialKeysBar] Button - Key tapped: '\(key.label)' (hex: \(hexValue))")
                         session.sendInput(key.value)
                         triggerHaptic()
                     }, label: {
@@ -90,6 +108,7 @@ struct SpecialKeysBar: View {
     }
 
     private func triggerHaptic() {
+        print("📳 [SpecialKeysBar] triggerHaptic - Haptic feedback triggered")
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
