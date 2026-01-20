@@ -71,6 +71,20 @@ int arm64_emulator_load_elf_memory(arm64_emulator_t *emu, const void *data, size
     return 0;
 }
 
+int arm64_emulator_load_elf_memory_with_fs(arm64_emulator_t *emu, const void *data, size_t size, void *fakefs)
+{
+    elf_load_info_t info;
+
+    if (elf_load_memory_with_fs(data, size, emu->mmu, &info, fakefs) < 0) {
+        return -1;
+    }
+
+    emu->cpu->pc = info.entry_point;
+    emu->cpu->sp = info.stack_top;
+
+    return 0;
+}
+
 void arm64_emulator_run(arm64_emulator_t *emu)
 {
     printf("[CPU] Starting execution at PC=0x%llx, SP=0x%llx\n",

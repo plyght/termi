@@ -56,9 +56,12 @@ typedef struct {
     uint64_t stack_top;
     int has_interpreter;
     char interpreter_path[256];
+    uint64_t interp_base;
+    uint64_t interp_entry;
 } elf_load_info_t;
 
 int elf_load(const char *path, void *mmu, elf_load_info_t *info);
 int elf_load_memory(const void *elf_data, size_t size, void *mmu, elf_load_info_t *info);
+int elf_load_memory_with_fs(const void *elf_data, size_t size, void *mmu, elf_load_info_t *info, void *fakefs);
 
 #endif

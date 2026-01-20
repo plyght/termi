@@ -15,6 +15,7 @@ void arm64_emulator_destroy(arm64_emulator_t *emu);
 
 int arm64_emulator_load_elf(arm64_emulator_t *emu, const char *path);
 int arm64_emulator_load_elf_memory(arm64_emulator_t *emu, const void *data, size_t size);
+int arm64_emulator_load_elf_memory_with_fs(arm64_emulator_t *emu, const void *data, size_t size, void *fakefs);
 
 void arm64_emulator_run(arm64_emulator_t *emu);
 int arm64_emulator_step(arm64_emulator_t *emu);

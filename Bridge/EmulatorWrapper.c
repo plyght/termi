@@ -228,7 +228,7 @@ int emulator_load_shell(EmulatorHandle handle, const char *shell_path) {
     
     printf("[EmulatorWrapper] Loaded %zu bytes from shell, calling emulator load\n", file_size);
     
-    int result = arm64_emulator_load_elf_memory(ctx->emu, buffer, file_size);
+    int result = arm64_emulator_load_elf_memory_with_fs(ctx->emu, buffer, file_size, &global_fakefs);
     if (result < 0) {
         printf("[EmulatorWrapper] Failed to load ELF into emulator: %d\n", result);
         free(buffer);
