@@ -1,0 +1,445 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		11A2F9771EDC404E9675174601 /* TermiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A2F9771EDC404E96751746 /* TermiApp.swift */; };
+		95E384005F5E4E91B6519BE801 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E384005F5E4E91B6519BE8 /* ContentView.swift */; };
+		AE528A98A3AC4D4D85A3426B01 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE528A98A3AC4D4D85A3426B /* TerminalView.swift */; };
+		356CCE596E654B34B22A3A6501 /* EmulatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CCE596E654B34B22A3A65 /* EmulatorManager.swift */; };
+		5862135D4F1444DE885DC71601 /* EmulatorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5862135D4F1444DE885DC716 /* EmulatorBridge.swift */; };
+		D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */; };
+		1C6632F5D7384D3C9E2F08C801 /* libsyscall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		11A2F9771EDC404E96751746 /* TermiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermiApp.swift; sourceTree = "<group>"; };
+		95E384005F5E4E91B6519BE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AE528A98A3AC4D4D85A3426B /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
+		356CCE596E654B34B22A3A65 /* EmulatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorManager.swift; sourceTree = "<group>"; };
+		5862135D4F1444DE885DC716 /* EmulatorBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorBridge.swift; sourceTree = "<group>"; };
+		D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesystemBridge.swift; sourceTree = "<group>"; };
+		39E365EFFA8045AA93502BE2 /* termi-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "termi-Bridging-Header.h"; sourceTree = "<group>"; };
+		50215F9829E546E893B1A6E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8143C342E68F46FB9897FD28 /* termi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = termi.entitlements; sourceTree = "<group>"; };
+		1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsyscall.a; path = ../Kernel/syscall/libsyscall.a; sourceTree = "<group>"; };
+		D89B64CC17DE4B49A922426C02 /* termi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = termi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		62A2BDE49B964C408E73FD0B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C6632F5D7384D3C9E2F08C801 /* libsyscall.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A8988486AD7142BBB8DB2E5D = {
+			isa = PBXGroup;
+			children = (
+				380F55EA2967496CBAA5046C /* App */,
+				D3B0A80F949B4058A875BE8E /* Bridge */,
+				5B0F6A9EA555421796D9B403 /* Resources */,
+				AE6AAB08909840F4BBA21B39 /* Frameworks */,
+				D89B64CC17DE4B49A922426C03 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		380F55EA2967496CBAA5046C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				11A2F9771EDC404E96751746 /* TermiApp.swift */,
+				A548DADC81F84CB6A8DFA7E7 /* UI */,
+				C1E897D65C2A4D5A9786979A /* Managers */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A548DADC81F84CB6A8DFA7E7 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				95E384005F5E4E91B6519BE8 /* ContentView.swift */,
+				AE528A98A3AC4D4D85A3426B /* TerminalView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		C1E897D65C2A4D5A9786979A /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				356CCE596E654B34B22A3A65 /* EmulatorManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		D3B0A80F949B4058A875BE8E /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				5862135D4F1444DE885DC716 /* EmulatorBridge.swift */,
+				D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */,
+				39E365EFFA8045AA93502BE2 /* termi-Bridging-Header.h */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		5B0F6A9EA555421796D9B403 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				50215F9829E546E893B1A6E5 /* Info.plist */,
+				8143C342E68F46FB9897FD28 /* termi.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AE6AAB08909840F4BBA21B39 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D89B64CC17DE4B49A922426C03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D89B64CC17DE4B49A922426C02 /* termi.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D89B64CC17DE4B49A922426C /* termi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8FEB88D58FB47BE8A84166D /* Build configuration list for PBXNativeTarget "termi" */;
+			buildPhases = (
+				B46C478759264B7CB8E6181E /* Sources */,
+				62A2BDE49B964C408E73FD0B /* Frameworks */,
+				E071B713E3B047F2AEEE98E3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = termi;
+			productName = termi;
+			productReference = D89B64CC17DE4B49A922426C02 /* termi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D198ADFEEF444569BAEB838E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					D89B64CC17DE4B49A922426C = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = FCC0CB44430C428F84EC46A2 /* Build configuration list for PBXProject "termi" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A8988486AD7142BBB8DB2E5D;
+			productRefGroup = D89B64CC17DE4B49A922426C03 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D89B64CC17DE4B49A922426C /* termi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E071B713E3B047F2AEEE98E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B46C478759264B7CB8E6181E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11A2F9771EDC404E9675174601 /* TermiApp.swift in Sources */,
+				95E384005F5E4E91B6519BE801 /* ContentView.swift in Sources */,
+				AE528A98A3AC4D4D85A3426B01 /* TerminalView.swift in Sources */,
+				356CCE596E654B34B22A3A6501 /* EmulatorManager.swift in Sources */,
+				5862135D4F1444DE885DC71601 /* EmulatorBridge.swift in Sources */,
+				D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CFD1D1025AD34B9F8A62A44B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CEAC235106924611BDC1147A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		66DD4DA25A4349F1BD660A30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/termi.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem/fakefs",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/include",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"-lsyscall",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Bridge/termi-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DD473DD6FEA34CD0B35B9361 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/termi.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem/fakefs",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/include",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"-lsyscall",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Bridge/termi-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FCC0CB44430C428F84EC46A2 /* Build configuration list for PBXProject "termi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFD1D1025AD34B9F8A62A44B /* Debug */,
+				CEAC235106924611BDC1147A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8FEB88D58FB47BE8A84166D /* Build configuration list for PBXNativeTarget "termi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66DD4DA25A4349F1BD660A30 /* Debug */,
+				DD473DD6FEA34CD0B35B9361 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D198ADFEEF444569BAEB838E /* Project object */;
+}
