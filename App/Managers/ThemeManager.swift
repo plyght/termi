@@ -2,55 +2,56 @@ import SwiftUI
 
 class ThemeManager: ObservableObject {
     static let shared = ThemeManager()
-    
+
     @Published var currentTheme: TerminalTheme = .solarizedDark
     @Published var fontSize: CGFloat = 14.0
     @Published var fontName: String = "Menlo-Regular"
-    
+
     var currentScheme: ColorScheme? {
         switch currentTheme.appearance {
-        case .dark: return .dark
-        case .light: return .light
-        case .auto: return nil
+        case .dark: .dark
+        case .light: .light
+        case .auto: nil
         }
     }
-    
+
     private init() {
         loadPreferences()
     }
-    
+
     func setTheme(_ theme: TerminalTheme) {
         currentTheme = theme
         savePreferences()
     }
-    
+
     func setFontSize(_ size: CGFloat) {
         fontSize = max(8, min(32, size))
         savePreferences()
     }
-    
+
     func setFont(_ fontName: String) {
         self.fontName = fontName
         savePreferences()
     }
-    
+
     private func savePreferences() {
         UserDefaults.standard.set(currentTheme.name, forKey: "terminalTheme")
         UserDefaults.standard.set(fontSize, forKey: "fontSize")
         UserDefaults.standard.set(fontName, forKey: "fontName")
     }
-    
+
     private func loadPreferences() {
         if let themeName = UserDefaults.standard.string(forKey: "terminalTheme"),
            let theme = TerminalTheme.allThemes.first(where: { $0.name == themeName }) {
             currentTheme = theme
         }
-        fontSize = UserDefaults.standard.double(forKey: "fontSize") as? CGFloat ?? 14.0
+        let savedFontSize = UserDefaults.standard.double(forKey: "fontSize")
+        fontSize = savedFontSize > 0 ? CGFloat(savedFontSize) : 14.0
         fontName = UserDefaults.standard.string(forKey: "fontName") ?? "Menlo-Regular"
     }
 }
 
-struct TerminalTheme {
+struct TerminalTheme: Hashable {
     let name: String
     let appearance: ThemeAppearance
     let backgroundColor: Color
@@ -58,11 +59,19 @@ struct TerminalTheme {
     let cursorColor: Color
     let selectionColor: Color
     let ansiColors: [Color]
-    
+
     enum ThemeAppearance {
         case light, dark, auto
     }
-    
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+
+    static func == (lhs: TerminalTheme, rhs: TerminalTheme) -> Bool {
+        lhs.name == rhs.name
+    }
+
     static let solarizedDark = TerminalTheme(
         name: "Solarized Dark",
         appearance: .dark,
@@ -86,10 +95,10 @@ struct TerminalTheme {
             Color(hex: "839496"),
             Color(hex: "6c71c4"),
             Color(hex: "93a1a1"),
-            Color(hex: "fdf6e3")
+            Color(hex: "fdf6e3"),
         ]
     )
-    
+
     static let solarizedLight = TerminalTheme(
         name: "Solarized Light",
         appearance: .light,
@@ -99,7 +108,7 @@ struct TerminalTheme {
         selectionColor: Color(hex: "eee8d5").opacity(0.7),
         ansiColors: solarizedDark.ansiColors
     )
-    
+
     static let dracula = TerminalTheme(
         name: "Dracula",
         appearance: .dark,
@@ -123,10 +132,10 @@ struct TerminalTheme {
             Color(hex: "d6acff"),
             Color(hex: "ff92df"),
             Color(hex: "a4ffff"),
-            Color(hex: "ffffff")
+            Color(hex: "ffffff"),
         ]
     )
-    
+
     static let nord = TerminalTheme(
         name: "Nord",
         appearance: .dark,
@@ -150,10 +159,10 @@ struct TerminalTheme {
             Color(hex: "81a1c1"),
             Color(hex: "b48ead"),
             Color(hex: "8fbcbb"),
-            Color(hex: "eceff4")
+            Color(hex: "eceff4"),
         ]
     )
-    
+
     static let catppuccin = TerminalTheme(
         name: "Catppuccin",
         appearance: .dark,
@@ -177,16 +186,16 @@ struct TerminalTheme {
             Color(hex: "89b4fa"),
             Color(hex: "f5c2e7"),
             Color(hex: "94e2d5"),
-            Color(hex: "a6adc8")
+            Color(hex: "a6adc8"),
         ]
     )
-    
+
     static let allThemes: [TerminalTheme] = [
         .solarizedDark,
         .solarizedLight,
         .dracula,
         .nord,
-        .catppuccin
+        .catppuccin,
     ]
 }
 
@@ -206,12 +215,12 @@ extension Color {
         default:
             (a, r, g, b) = (255, 0, 0, 0)
         }
-        
+
         self.init(
             .sRGB,
             red: Double(r) / 255,
             green: Double(g) / 255,
-            blue:  Double(b) / 255,
+            blue: Double(b) / 255,
             opacity: Double(a) / 255
         )
     }

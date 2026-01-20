@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationView {
             Form {
@@ -13,13 +13,13 @@ struct SettingsView: View {
                             Text(theme.name).tag(theme)
                         }
                     }
-                    
+
                     HStack {
                         Text("Font Size")
                         Spacer()
-                        Stepper("\(Int(themeManager.fontSize))", value: $themeManager.fontSize, in: 8...32, step: 1)
+                        Stepper("\(Int(themeManager.fontSize))", value: $themeManager.fontSize, in: 8 ... 32, step: 1)
                     }
-                    
+
                     Picker("Font", selection: $themeManager.fontName) {
                         Text("Menlo").tag("Menlo-Regular")
                         Text("Monaco").tag("Monaco")
@@ -27,12 +27,12 @@ struct SettingsView: View {
                         Text("SF Mono").tag("SFMono-Regular")
                     }
                 }
-                
+
                 Section(header: Text("Terminal")) {
                     Toggle("Enable Haptic Feedback", isOn: .constant(true))
                     Toggle("Show Cursor", isOn: .constant(true))
                 }
-                
+
                 Section(header: Text("About")) {
                     HStack {
                         Text("Version")
@@ -40,7 +40,7 @@ struct SettingsView: View {
                         Text("1.0.0")
                             .foregroundColor(.secondary)
                     }
-                    
+
                     Link("GitHub Repository", destination: URL(string: "https://github.com")!)
                 }
             }

@@ -66,7 +66,7 @@ fi
 # Count lines of code
 echo ""
 echo "Code Statistics:"
-LINES=$(find Filesystem -name "*.c" -o -name "*.h" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
+LINES=$(find Filesystem \( -name "*.c" -o -name "*.h" \) -exec wc -l {} + 2>/dev/null | tail -1 | awk '{print $1}')
 echo "  Total C code: $LINES lines"
 
 FILES_COUNT=$(find Filesystem -name "*.c" -o -name "*.h" | wc -l | tr -d ' ')

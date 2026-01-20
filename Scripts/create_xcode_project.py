@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import os
 import uuid
-import plistlib
 from pathlib import Path
 
 project_root = Path(__file__).parent.parent

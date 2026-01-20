@@ -4,11 +4,11 @@ struct SplitPaneView: View {
     @EnvironmentObject var sessionManager: SessionManager
     @State private var splitOrientation: SplitOrientation = .horizontal
     @State private var splitRatio: CGFloat = 0.5
-    
+
     enum SplitOrientation {
         case horizontal, vertical
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             if sessionManager.sessions.count >= 2 {
@@ -19,23 +19,23 @@ struct SplitPaneView: View {
                             TerminalView(session: firstSession)
                                 .frame(width: geometry.size.width * splitRatio)
                         }
-                        
+
                         SplitDivider(orientation: .vertical, ratio: $splitRatio)
-                        
+
                         if sessionManager.sessions.count > 1 {
                             TerminalView(session: sessionManager.sessions[1])
                         }
                     }
-                    
+
                 case .vertical:
                     VStack(spacing: 1) {
                         if let firstSession = sessionManager.sessions.first {
                             TerminalView(session: firstSession)
                                 .frame(height: geometry.size.height * splitRatio)
                         }
-                        
+
                         SplitDivider(orientation: .horizontal, ratio: $splitRatio)
-                        
+
                         if sessionManager.sessions.count > 1 {
                             TerminalView(session: sessionManager.sessions[1])
                         }
@@ -52,12 +52,12 @@ struct SplitDivider: View {
     enum Orientation {
         case horizontal, vertical
     }
-    
+
     let orientation: Orientation
     @Binding var ratio: CGFloat
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isDragging = false
-    
+
     var body: some View {
         Rectangle()
             .fill(themeManager.currentTheme.foregroundColor.opacity(0.2))
@@ -76,7 +76,7 @@ struct SplitDivider: View {
                     }
             )
     }
-    
+
     private func updateRatio(with translation: CGSize) {
         switch orientation {
         case .horizontal:

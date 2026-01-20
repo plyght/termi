@@ -2,9 +2,9 @@
 #define TERMI_FAKE_H
 
 #include "fake-db.h"
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 struct fakefs {
     struct fakefs_db db;

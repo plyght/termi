@@ -1,8 +1,8 @@
 #ifndef TERMI_ELF_LOADER_H
 #define TERMI_ELF_LOADER_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define ELF_MAGIC 0x464C457F
 

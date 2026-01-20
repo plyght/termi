@@ -1,8 +1,8 @@
 #ifndef TERMI_PROC_SYS_DEV_H
 #define TERMI_PROC_SYS_DEV_H
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 int procfs_init(const char *mount_point);
 int sysfs_init(const char *mount_point);

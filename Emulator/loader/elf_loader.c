@@ -1,52 +1,57 @@
 #include "elf_loader.h"
 #include "../mmu/mmu.h"
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #define STACK_SIZE (8 * 1024 * 1024)
 #define STACK_TOP 0x7FFFFFFFF000ULL
 
-static uint32_t pf_to_prot(uint32_t flags) {
+static uint32_t pf_to_prot(uint32_t flags)
+{
     uint32_t prot = 0;
-    if (flags & PF_R) prot |= PROT_READ;
-    if (flags & PF_W) prot |= PROT_WRITE;
-    if (flags & PF_X) prot |= PROT_EXEC;
+    if (flags & PF_R)
+        prot |= PROT_READ;
+    if (flags & PF_W)
+        prot |= PROT_WRITE;
+    if (flags & PF_X)
+        prot |= PROT_EXEC;
     return prot;
 }
 
-int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_info_t *info) {
+int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_info_t *info)
+{
     arm64_mmu_t *mmu = (arm64_mmu_t *)mmu_ptr;
     const uint8_t *data = (const uint8_t *)elf_data;
-    
+
     if (size < sizeof(elf64_ehdr_t)) {
         return -1;
     }
-    
+
     elf64_ehdr_t *ehdr = (elf64_ehdr_t *)data;
-    
+
     if (ehdr->e_ident_magic != ELF_MAGIC) {
         return -1;
     }
-    
+
     if (ehdr->e_ident_class != 2) {
         return -1;
     }
-    
+
     if (ehdr->e_machine != 183) {
         return -1;
     }
-    
+
     info->entry_point = ehdr->e_entry;
     info->load_base = 0;
     info->has_interpreter = 0;
-    
+
     for (int i = 0; i < ehdr->e_phnum; i++) {
         elf64_phdr_t *phdr = (elf64_phdr_t *)(data + ehdr->e_phoff + i * ehdr->e_phentsize);
-        
+
         if (phdr->p_type == PT_INTERP) {
             info->has_interpreter = 1;
             size_t interp_len = phdr->p_filesz;
@@ -56,23 +61,23 @@ int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_i
             memcpy(info->interpreter_path, data + phdr->p_offset, interp_len);
             info->interpreter_path[interp_len] = '\0';
         }
-        
+
         if (phdr->p_type == PT_LOAD) {
             uint64_t vaddr = phdr->p_vaddr;
             uint64_t memsz = phdr->p_memsz;
             uint64_t filesz = phdr->p_filesz;
             uint32_t prot = pf_to_prot(phdr->p_flags);
-            
+
             if (arm64_mmu_map(mmu, vaddr, memsz, prot) < 0) {
                 return -1;
             }
-            
+
             if (filesz > 0) {
                 if (arm64_mmu_write(mmu, vaddr, data + phdr->p_offset, filesz) < 0) {
                     return -1;
                 }
             }
-            
+
             if (memsz > filesz) {
                 uint8_t zero = 0;
                 for (uint64_t j = filesz; j < memsz; j++) {
@@ -81,43 +86,44 @@ int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_i
             }
         }
     }
-    
+
     info->stack_top = STACK_TOP;
     if (arm64_mmu_map(mmu, STACK_TOP - STACK_SIZE, STACK_SIZE, PROT_READ | PROT_WRITE) < 0) {
         return -1;
     }
-    
+
     return 0;
 }
 
-int elf_load(const char *path, void *mmu, elf_load_info_t *info) {
+int elf_load(const char *path, void *mmu, elf_load_info_t *info)
+{
     int fd = open(path, O_RDONLY);
     if (fd < 0) {
         return -1;
     }
-    
+
     struct stat st;
     if (fstat(fd, &st) < 0) {
         close(fd);
         return -1;
     }
-    
+
     void *data = malloc(st.st_size);
     if (!data) {
         close(fd);
         return -1;
     }
-    
+
     ssize_t n = read(fd, data, st.st_size);
     close(fd);
-    
+
     if (n != st.st_size) {
         free(data);
         return -1;
     }
-    
+
     int ret = elf_load_memory(data, st.st_size, mmu, info);
     free(data);
-    
+
     return ret;
 }

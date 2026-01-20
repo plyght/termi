@@ -24,7 +24,7 @@ rm -rf rootfs
 ../Filesystem/fakefsify "alpine-minirootfs-${ALPINE_VERSION}-${ALPINE_ARCH}.tar.gz" rootfs
 
 echo "Setting up Alpine repositories..."
-cat > rootfs/data/etc/apk/repositories << 'EOF'
+cat >rootfs/data/etc/apk/repositories <<'EOF'
 https://dl-cdn.alpinelinux.org/alpine/v3.19/main
 https://dl-cdn.alpinelinux.org/alpine/v3.19/community
 EOF
@@ -38,11 +38,11 @@ mkdir -p rootfs/data/tmp
 chmod 1777 rootfs/data/tmp
 
 echo "Setting up /etc/passwd and /etc/group..."
-cat > rootfs/data/etc/passwd << 'EOF'
+cat >rootfs/data/etc/passwd <<'EOF'
 root:x:0:0:root:/root:/bin/sh
 EOF
 
-cat > rootfs/data/etc/group << 'EOF'
+cat >rootfs/data/etc/group <<'EOF'
 root:x:0:
 EOF
 

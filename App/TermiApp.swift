@@ -4,11 +4,11 @@ import SwiftUI
 struct TermiApp: App {
     @StateObject private var sessionManager = SessionManager.shared
     @StateObject private var themeManager = ThemeManager.shared
-    
+
     init() {
         setupTerminalEnvironment()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             MainTerminalView()
@@ -17,7 +17,7 @@ struct TermiApp: App {
                 .preferredColorScheme(themeManager.currentScheme)
         }
     }
-    
+
     private func setupTerminalEnvironment() {
         EmulatorBridge.shared.initialize()
     }
@@ -28,17 +28,17 @@ struct MainTerminalView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showSettings = false
     @State private var selectedTab = 0
-    
+
     var body: some View {
         ZStack {
             themeManager.currentTheme.backgroundColor
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 if sessionManager.sessions.count > 1 {
                     TabBarView(selectedTab: $selectedTab)
                 }
-                
+
                 if let session = sessionManager.sessions[safe: selectedTab] {
                     TerminalView(session: session)
                 } else {
@@ -62,7 +62,7 @@ struct MainTerminalView: View {
             }
         }
     }
-    
+
     private func handlePinchGesture(scale: CGFloat) {
         let newSize = themeManager.fontSize * scale
         themeManager.setFontSize(newSize)
@@ -71,6 +71,6 @@ struct MainTerminalView: View {
 
 extension Collection {
     subscript(safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
+        indices.contains(index) ? self[index] : nil
     }
 }

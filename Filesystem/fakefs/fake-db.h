@@ -1,9 +1,9 @@
 #ifndef TERMI_FAKEFS_DB_H
 #define TERMI_FAKEFS_DB_H
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <sqlite3.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef uint64_t inode_t;
 

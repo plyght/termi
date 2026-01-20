@@ -1,6 +1,6 @@
 CC = clang
-CFLAGS = -Wall -Wextra -O2 -I.
-LDFLAGS = -lsqlite3 -larchive
+CFLAGS = -Wall -Wextra -O2 -I. -I/opt/homebrew/opt/libarchive/include
+LDFLAGS = -L/opt/homebrew/opt/libarchive/lib -lsqlite3 -larchive
 
 FAKEFS_OBJS = fakefs/fake-db.o fakefs/fake.o fakefs/proc_sys_dev.o
 TOOLS_OBJS = tools/fakefsify.o

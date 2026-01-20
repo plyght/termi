@@ -2,8 +2,8 @@
 #define TERMI_EMULATOR_H
 
 #include "cpu/arm64_cpu.h"
-#include "mmu/mmu.h"
 #include "loader/elf_loader.h"
+#include "mmu/mmu.h"
 
 typedef struct {
     arm64_cpu_t *cpu;

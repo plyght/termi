@@ -1,0 +1,6 @@
+--swiftversion 5.9
+--exclude .build,ish-repo
+--indent 4
+--maxwidth 120
+--header strip
+--disable wrapMultilineStatementBraces

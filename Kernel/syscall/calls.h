@@ -5,8 +5,7 @@
 
 typedef long (*syscall_t)(long, long, long, long, long, long);
 
-long handle_syscall(int num, long arg1, long arg2, long arg3, 
-                   long arg4, long arg5, long arg6);
+long handle_syscall(int num, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 
 dword_t syscall_stub(void);
 dword_t syscall_silent_stub(void);

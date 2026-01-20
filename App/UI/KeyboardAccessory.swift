@@ -5,11 +5,11 @@ struct KeyboardAccessory: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var inputText = ""
     @FocusState private var isInputFocused: Bool
-    
+
     var body: some View {
         VStack(spacing: 0) {
             SpecialKeysBar(session: session)
-            
+
             HStack(spacing: 8) {
                 TextField("", text: $inputText)
                     .textFieldStyle(.plain)
@@ -24,15 +24,15 @@ struct KeyboardAccessory: View {
                         sendInput(inputText + "\n")
                         inputText = ""
                     }
-                
+
                 Button(action: {
                     sendInput(inputText + "\n")
                     inputText = ""
-                }) {
+                }, label: {
                     Image(systemName: "arrow.up.circle.fill")
                         .font(.system(size: 28))
                         .foregroundColor(themeManager.currentTheme.foregroundColor)
-                }
+                })
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -42,7 +42,7 @@ struct KeyboardAccessory: View {
             isInputFocused = true
         }
     }
-    
+
     private func sendInput(_ text: String) {
         session.sendInput(text)
     }
@@ -51,7 +51,7 @@ struct KeyboardAccessory: View {
 struct SpecialKeysBar: View {
     @ObservedObject var session: TerminalSession
     @EnvironmentObject var themeManager: ThemeManager
-    
+
     private let specialKeys: [(label: String, value: String)] = [
         ("Ctrl", "\u{0003}"),
         ("Esc", "\u{001B}"),
@@ -59,9 +59,9 @@ struct SpecialKeysBar: View {
         ("↑", "\u{001B}[A"),
         ("↓", "\u{001B}[B"),
         ("←", "\u{001B}[D"),
-        ("→", "\u{001B}[C")
+        ("→", "\u{001B}[C"),
     ]
-    
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
@@ -69,7 +69,7 @@ struct SpecialKeysBar: View {
                     Button(action: {
                         session.sendInput(key.value)
                         triggerHaptic()
-                    }) {
+                    }, label: {
                         Text(key.label)
                             .font(.system(size: 14, weight: .medium, design: .monospaced))
                             .foregroundColor(themeManager.currentTheme.foregroundColor)
@@ -79,7 +79,7 @@ struct SpecialKeysBar: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .fill(themeManager.currentTheme.foregroundColor.opacity(0.1))
                             )
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -88,7 +88,7 @@ struct SpecialKeysBar: View {
         }
         .background(themeManager.currentTheme.backgroundColor.opacity(0.98))
     }
-    
+
     private func triggerHaptic() {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()

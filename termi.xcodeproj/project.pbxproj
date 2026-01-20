@@ -14,6 +14,13 @@
 		5862135D4F1444DE885DC71601 /* EmulatorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5862135D4F1444DE885DC716 /* EmulatorBridge.swift */; };
 		D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */; };
 		1C6632F5D7384D3C9E2F08C801 /* libsyscall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */; };
+		AA11BB22CC33DD44EE55FF6601 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* SessionManager.swift */; };
+		BB22CC33DD44EE55FF66AA7701 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66AA77 /* ThemeManager.swift */; };
+		CC33DD44EE55FF66AA77BB8801 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC33DD44EE55FF66AA77BB88 /* TabBarView.swift */; };
+		DD44EE55FF66AA77BB88CC9901 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66AA77BB88CC99 /* SettingsView.swift */; };
+		EE55FF66AA77BB88CC99DD0001 /* ThemePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */; };
+		FF66AA77BB88CC99DD00EE1101 /* SplitPaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */; };
+		AA77BB88CC99DD00EE11FF2201 /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +35,13 @@
 		8143C342E68F46FB9897FD28 /* termi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = termi.entitlements; sourceTree = "<group>"; };
 		1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsyscall.a; path = ../Kernel/syscall/libsyscall.a; sourceTree = "<group>"; };
 		D89B64CC17DE4B49A922426C02 /* termi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = termi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA11BB22CC33DD44EE55FF66 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66AA77 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		CC33DD44EE55FF66AA77BB88 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		DD44EE55FF66AA77BB88CC99 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePickerView.swift; sourceTree = "<group>"; };
+		FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitPaneView.swift; sourceTree = "<group>"; };
+		AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +82,11 @@
 			children = (
 				95E384005F5E4E91B6519BE8 /* ContentView.swift */,
 				AE528A98A3AC4D4D85A3426B /* TerminalView.swift */,
+				CC33DD44EE55FF66AA77BB88 /* TabBarView.swift */,
+				DD44EE55FF66AA77BB88CC99 /* SettingsView.swift */,
+				EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */,
+				FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */,
+				AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -76,6 +95,9 @@
 			isa = PBXGroup;
 			children = (
 				356CCE596E654B34B22A3A65 /* EmulatorManager.swift */,
+				AA11BB22CC33DD44EE55FF66 /* SessionManager.swift */,
+				BB22CC33DD44EE55FF66AA77 /* ThemeManager.swift */,
+				5862135D4F1444DE885DC716 /* EmulatorBridge.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -83,7 +105,6 @@
 		D3B0A80F949B4058A875BE8E /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
-				5862135D4F1444DE885DC716 /* EmulatorBridge.swift */,
 				D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */,
 				39E365EFFA8045AA93502BE2 /* termi-Bridging-Header.h */,
 			);
@@ -189,6 +210,13 @@
 				356CCE596E654B34B22A3A6501 /* EmulatorManager.swift in Sources */,
 				5862135D4F1444DE885DC71601 /* EmulatorBridge.swift in Sources */,
 				D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */,
+				AA11BB22CC33DD44EE55FF6601 /* SessionManager.swift in Sources */,
+				BB22CC33DD44EE55FF66AA7701 /* ThemeManager.swift in Sources */,
+				CC33DD44EE55FF66AA77BB8801 /* TabBarView.swift in Sources */,
+				DD44EE55FF66AA77BB88CC9901 /* SettingsView.swift in Sources */,
+				EE55FF66AA77BB88CC99DD0001 /* ThemePickerView.swift in Sources */,
+				FF66AA77BB88CC99DD00EE1101 /* SplitPaneView.swift in Sources */,
+				AA77BB88CC99DD00EE11FF2201 /* KeyboardAccessory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

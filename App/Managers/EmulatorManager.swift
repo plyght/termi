@@ -1,32 +1,27 @@
-import Foundation
 import Combine
+import Foundation
 
 class EmulatorManager: ObservableObject {
     @Published var isRunning: Bool = false
     @Published var output: String = ""
-    
-    private var emulatorBridge: EmulatorBridge?
-    
+
+    private var emulatorBridge: EmulatorBridge
+
     init() {
-        self.emulatorBridge = EmulatorBridge()
+        emulatorBridge = EmulatorBridge.shared
+        emulatorBridge.initialize()
     }
-    
+
     func start() async {
         guard !isRunning else { return }
-        
         isRunning = true
-        
-        await Task {
-            emulatorBridge?.start()
-        }.value
     }
-    
+
     func stop() {
-        emulatorBridge?.stop()
         isRunning = false
     }
-    
-    func sendInput(_ input: String) {
-        emulatorBridge?.sendInput(input)
+
+    func sendInput(_ input: String, to session: TerminalSession) {
+        emulatorBridge.sendInput(input, to: session)
     }
 }

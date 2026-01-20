@@ -3,7 +3,7 @@ import SwiftUI
 struct ThemePickerView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationView {
             List(TerminalTheme.allThemes, id: \.name) { theme in
@@ -29,24 +29,24 @@ struct ThemePickerView: View {
 struct ThemePreviewRow: View {
     let theme: TerminalTheme
     let isSelected: Bool
-    
+
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(theme.name)
                     .font(.system(size: 16, weight: .medium))
-                
+
                 HStack(spacing: 4) {
-                    ForEach(0..<8, id: \.self) { index in
+                    ForEach(0 ..< 8, id: \.self) { index in
                         Circle()
                             .fill(theme.ansiColors[index])
                             .frame(width: 16, height: 16)
                     }
                 }
             }
-            
+
             Spacer()
-            
+
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.blue)
