@@ -1,6 +1,7 @@
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type-mismatch -std=c11 -O2 -I../include
-ARCH = -arch arm64
+SDK = iphonesimulator
+CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type-mismatch -std=c11 -O2 -I../include -target arm64-apple-ios16.0-simulator -isysroot $(shell xcrun --sdk $(SDK) --show-sdk-path)
+ARCH =
 
 SOURCES = calls.c process.c fs.c memory.c network.c user_access.c
 OBJECTS = $(SOURCES:.c=.o)

@@ -21,7 +21,6 @@
 		EE55FF66AA77BB88CC99DD0001 /* ThemePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */; };
 		FF66AA77BB88CC99DD00EE1101 /* SplitPaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */; };
 		AA77BB88CC99DD00EE11FF2201 /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */; };
-		ALPINE00ROOTFS00FOLDER0101 /* rootfs in Resources */ = {isa = PBXBuildFile; fileRef = ALPINE00ROOTFS00FOLDER01 /* rootfs */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +42,6 @@
 		EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePickerView.swift; sourceTree = "<group>"; };
 		FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitPaneView.swift; sourceTree = "<group>"; };
 		AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
-		ALPINE00ROOTFS00FOLDER01 /* rootfs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rootfs; path = ../Alpine/rootfs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +116,6 @@
 			children = (
 				50215F9829E546E893B1A6E5 /* Info.plist */,
 				8143C342E68F46FB9897FD28 /* termi.entitlements */,
-				ALPINE00ROOTFS00FOLDER01 /* rootfs */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -197,7 +194,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ALPINE00ROOTFS00FOLDER0101 /* rootfs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,8 +369,6 @@
 					"$(PROJECT_DIR)/Kernel/syscall",
 					"$(PROJECT_DIR)/Filesystem/fakefs",
 					"$(PROJECT_DIR)/Bridge",
-					"$(PROJECT_DIR)/Emulator",
-					"$(PROJECT_DIR)/Filesystem",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -387,8 +381,6 @@
 					"-lsqlite3",
 					"-lsyscall",
 					"-lemulatorwrapper",
-					"-lemulator",
-					"-lfakefs",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -431,8 +423,6 @@
 					"$(PROJECT_DIR)/Kernel/syscall",
 					"$(PROJECT_DIR)/Filesystem/fakefs",
 					"$(PROJECT_DIR)/Bridge",
-					"$(PROJECT_DIR)/Emulator",
-					"$(PROJECT_DIR)/Filesystem",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -445,8 +435,6 @@
 					"-lsqlite3",
 					"-lsyscall",
 					"-lemulatorwrapper",
-					"-lemulator",
-					"-lfakefs",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";

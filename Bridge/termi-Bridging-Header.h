@@ -8,5 +8,6 @@
 #import "../Filesystem/fakefs/fake.h"
 #import "../Filesystem/fakefs/proc_sys_dev.h"
 #import "../Kernel/syscall/calls.h"
+#import "EmulatorWrapper.h"
 
 #endif

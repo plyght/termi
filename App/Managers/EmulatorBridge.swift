@@ -4,11 +4,17 @@ class EmulatorBridge {
     static let shared = EmulatorBridge()
 
     private var sessionMap: [UUID: TerminalSession] = [:]
+    private var sessionEmulators: [UUID: UnsafeMutableRawPointer] = [:]
     private var emulatorQueue = DispatchQueue(label: "com.termi.emulator", qos: .userInteractive)
     private var isInitialized = false
 
     private init() {
         print("🏗️  [EmulatorBridge] INIT - EmulatorBridge singleton created")
+    }
+    
+    deinit {
+        print("🗑️  [EmulatorBridge] DEINIT - Cleaning up filesystem")
+        emulator_deinit_filesystem()
     }
 
     func initialize() {
@@ -43,7 +49,7 @@ class EmulatorBridge {
             return
         }
         
-        let alpineRootfs = (bundlePath as NSString).appendingPathComponent("Alpine/rootfs")
+        let alpineRootfs = (bundlePath as NSString).appendingPathComponent("rootfs")
         let metaDB = (alpineRootfs as NSString).appendingPathComponent("meta.db")
         let dataPath = (alpineRootfs as NSString).appendingPathComponent("data")
         
@@ -59,17 +65,27 @@ class EmulatorBridge {
             return
         }
         
-        print("✅ [EmulatorBridge] initializeFilesystem - Filesystem initialization complete")
+        let result = metaDB.withCString { dbPathPtr in
+            dataPath.withCString { dataPathPtr in
+                emulator_init_filesystem(dbPathPtr, dataPathPtr)
+            }
+        }
+        
+        if result == 0 {
+            print("✅ [EmulatorBridge] initializeFilesystem - Filesystem initialized successfully")
+        } else {
+            print("❌ [EmulatorBridge] initializeFilesystem - Filesystem initialization failed with code: \(result)")
+        }
     }
 
 
 
     private func initializeSyscallLayer() {
-        print("🔧 [EmulatorBridge] initializeSyscallLayer - Syscall layer initialization (stub)")
+        print("🔧 [EmulatorBridge] initializeSyscallLayer - Syscalls already wired in C layer")
     }
 
     private func startEmulatorLoop() {
-        print("🔄 [EmulatorBridge] startEmulatorLoop - Emulator loop starting (stub)")
+        print("🔄 [EmulatorBridge] startEmulatorLoop - Each session starts its own loop")
     }
 
     func attachSession(_ session: TerminalSession) {
@@ -95,33 +111,83 @@ class EmulatorBridge {
 
     private func createPTY(for session: TerminalSession) {
         print("🖥️  [EmulatorBridge] createPTY - Creating PTY for session: \(session.id)")
-        let welcomeMessage = """
-        Welcome to termi
-        ARM64 Linux Terminal for iOS 26
-
-        [EMULATOR NOT WIRED UP YET]
-        Need to initialize:
-        - fakefs with Alpine rootfs
-        - ARM64 emulator
-        - Load /bin/sh binary
-        - Wire up PTY I/O
         
-        \(session.workingDirectory) $ 
-        """
-
-        print("📝 [EmulatorBridge] createPTY - Welcome message length: \(welcomeMessage.count)")
-        if let data = welcomeMessage.data(using: .utf8) {
-            print("📤 [EmulatorBridge] createPTY - Sending welcome message (\(data.count) bytes)")
-            DispatchQueue.main.async {
-                session.receiveOutput(data)
+        guard let handle = emulator_create() else {
+            print("❌ [EmulatorBridge] createPTY - Failed to create emulator handle")
+            return
+        }
+        
+        print("✅ [EmulatorBridge] createPTY - Emulator handle created: \(handle)")
+        sessionEmulators[session.id] = handle
+        
+        let shellPath = "/bin/busybox"
+        let loadResult = shellPath.withCString { pathPtr in
+            emulator_load_shell(handle, pathPtr)
+        }
+        
+        if loadResult != 0 {
+            print("❌ [EmulatorBridge] createPTY - Failed to load shell: \(shellPath), error: \(loadResult)")
+            emulator_destroy(handle)
+            sessionEmulators.removeValue(forKey: session.id)
+            return
+        }
+        
+        print("✅ [EmulatorBridge] createPTY - Shell loaded: \(shellPath)")
+        
+        let runResult = emulator_run_async(handle)
+        if runResult != 0 {
+            print("❌ [EmulatorBridge] createPTY - Failed to start emulator async, error: \(runResult)")
+            emulator_destroy(handle)
+            sessionEmulators.removeValue(forKey: session.id)
+            return
+        }
+        
+        print("✅ [EmulatorBridge] createPTY - Emulator running async")
+        
+        startOutputPolling(for: session, handle: handle)
+    }
+    
+    private func startOutputPolling(for session: TerminalSession, handle: UnsafeMutableRawPointer) {
+        print("📡 [EmulatorBridge] startOutputPolling - Starting output polling for session: \(session.id)")
+        
+        emulatorQueue.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
+            guard self.sessionEmulators[session.id] != nil else {
+                print("🛑 [EmulatorBridge] startOutputPolling - Session \(session.id) no longer active")
+                return
             }
-        } else {
-            print("❌ [EmulatorBridge] createPTY - Failed to encode welcome message")
+            
+            var buffer = [CChar](repeating: 0, count: 4096)
+            let bytesRead = emulator_read_output(handle, &buffer, 4096)
+            
+            if bytesRead > 0 {
+                print("📥 [EmulatorBridge] startOutputPolling - Read \(bytesRead) bytes from emulator")
+                let data = Data(bytes: buffer, count: Int(bytesRead))
+                DispatchQueue.main.async {
+                    session.receiveOutput(data)
+                }
+            }
+            
+            self.startOutputPolling(for: session, handle: handle)
         }
     }
 
     private func destroyPTY(for session: TerminalSession) {
         print("🗑️  [EmulatorBridge] destroyPTY - Destroying PTY for session: \(session.id)")
+        
+        guard let handle = sessionEmulators[session.id] else {
+            print("⚠️  [EmulatorBridge] destroyPTY - No emulator handle found for session: \(session.id)")
+            return
+        }
+        
+        print("🛑 [EmulatorBridge] destroyPTY - Stopping emulator")
+        emulator_stop(handle)
+        
+        print("🗑️  [EmulatorBridge] destroyPTY - Destroying emulator handle")
+        emulator_destroy(handle)
+        
+        sessionEmulators.removeValue(forKey: session.id)
+        print("✅ [EmulatorBridge] destroyPTY - PTY destroyed successfully")
     }
 
     func sendInput(_ input: String, to session: TerminalSession) {
@@ -135,28 +201,27 @@ class EmulatorBridge {
 
     private func processInput(_ input: String, for session: TerminalSession) {
         print("🔄 [EmulatorBridge] processInput - Processing for session: \(session.id.uuidString.prefix(8))")
-        print("📝 [EmulatorBridge] processInput - TODO: Wire up ARM64 emulator to execute: '\(input.trimmingCharacters(in: .whitespacesAndNewlines))'")
+        print("📝 [EmulatorBridge] processInput - Input: '\(input)'")
         
-        if let data = input.data(using: .utf8) {
-            print("📤 [EmulatorBridge] processInput - Echoing input (\(data.count) bytes)")
-            DispatchQueue.main.async {
-                session.receiveOutput(data)
-            }
-        } else {
-            print("❌ [EmulatorBridge] processInput - Failed to encode input as UTF-8")
+        guard let handle = sessionEmulators[session.id] else {
+            print("❌ [EmulatorBridge] processInput - No emulator handle found for session: \(session.id)")
+            return
         }
-
-        if input.contains("\n") {
-            print("↩️  [EmulatorBridge] processInput - Newline detected, sending prompt")
-            let prompt = "\n\(session.workingDirectory) $ "
-            if let data = prompt.data(using: .utf8) {
-                print("📤 [EmulatorBridge] processInput - Sending prompt (\(data.count) bytes)")
-                DispatchQueue.main.async {
-                    session.receiveOutput(data)
-                }
-            } else {
-                print("❌ [EmulatorBridge] processInput - Failed to encode prompt")
-            }
+        
+        guard let data = input.data(using: .utf8) else {
+            print("❌ [EmulatorBridge] processInput - Failed to encode input as UTF-8")
+            return
+        }
+        
+        let result = data.withUnsafeBytes { bufferPtr in
+            guard let baseAddress = bufferPtr.baseAddress else { return Int32(-1) }
+            return emulator_send_input(handle, baseAddress.assumingMemoryBound(to: CChar.self), data.count)
+        }
+        
+        if result == 0 {
+            print("✅ [EmulatorBridge] processInput - Sent \(data.count) bytes to emulator")
+        } else {
+            print("❌ [EmulatorBridge] processInput - Failed to send input, error: \(result)")
         }
     }
 

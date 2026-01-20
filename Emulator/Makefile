@@ -1,5 +1,6 @@
 CC = clang
-CFLAGS = -Wall -Wextra -O2 -g -I. -I../Kernel/include
+SDK = iphonesimulator
+CFLAGS = -Wall -Wextra -O2 -g -I. -I../Kernel/include -target arm64-apple-ios16.0-simulator -isysroot $(shell xcrun --sdk $(SDK) --show-sdk-path)
 LDFLAGS =
 
 SRCS = cpu/arm64_cpu.c \

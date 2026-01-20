@@ -1,9 +1,14 @@
 #include "calls.h"
+#include "../../Filesystem/fakefs/fake.h"
+#include "../../Filesystem/fakefs/proc_sys_dev.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+extern struct fakefs global_fakefs;
 
 #define O_RDONLY_ 0x0000
 #define O_WRONLY_ 0x0001
@@ -58,20 +63,38 @@ dword_t sys_open(addr_t path_addr, dword_t flags, mode_t_ mode)
         return _EFAULT;
     }
 
+    printf("[syscall] sys_open: path=%s, flags=0x%x, mode=0%o\n", path, flags, mode);
+
     int darwin_flags = translate_open_flags(flags);
-    int fd = open(path, darwin_flags, mode);
+    int fd = fakefs_open(&global_fakefs, path, darwin_flags, mode);
 
     if (fd < 0) {
-        return -errno;
+        if (strncmp(path, "/dev/", 5) == 0 || strncmp(path, "/proc/", 6) == 0) {
+            printf("[syscall] sys_open: fakefs failed for %s, trying Darwin fallback\n", path);
+            fd = open(path, darwin_flags, mode);
+            if (fd < 0) {
+                return -errno;
+            }
+        } else {
+            return -errno;
+        }
     }
 
+    printf("[syscall] sys_open: fd=%d\n", fd);
     return fd;
 }
 
 dword_t sys_close(fd_t fd)
 {
-    if (close(fd) < 0) {
-        return -errno;
+    printf("[syscall] sys_close: fd=%d\n", fd);
+    
+    int result = fakefs_close(&global_fakefs, fd);
+    if (result < 0) {
+        printf("[syscall] sys_close: fakefs failed, trying Darwin close\n");
+        if (close(fd) < 0) {
+            return -errno;
+        }
+        return 0;
     }
     return 0;
 }
@@ -83,10 +106,14 @@ dword_t sys_read(fd_t fd_no, addr_t buf_addr, dword_t size)
 
     while (size > 0) {
         size_t chunk = (size_t)size > sizeof(buffer) ? sizeof(buffer) : (size_t)size;
-        ssize_t nread = read(fd_no, buffer, chunk);
+        ssize_t nread = fakefs_read(&global_fakefs, fd_no, buffer, chunk);
 
         if (nread < 0) {
-            return total_read > 0 ? total_read : -errno;
+            printf("[syscall] sys_read: fakefs_read failed for fd=%d, trying Darwin read\n", fd_no);
+            nread = read(fd_no, buffer, chunk);
+            if (nread < 0) {
+                return total_read > 0 ? total_read : -errno;
+            }
         }
 
         if (nread == 0) {
@@ -105,8 +132,14 @@ dword_t sys_read(fd_t fd_no, addr_t buf_addr, dword_t size)
         }
     }
 
+    printf("[syscall] sys_read: fd=%d, total_read=%d\n", fd_no, total_read);
     return total_read;
 }
+
+static char stdout_buffer[16384];
+static size_t stdout_buffer_pos = 0;
+static char stderr_buffer[16384];
+static size_t stderr_buffer_pos = 0;
 
 dword_t sys_write(fd_t fd_no, addr_t buf_addr, dword_t size)
 {
@@ -120,10 +153,30 @@ dword_t sys_write(fd_t fd_no, addr_t buf_addr, dword_t size)
             return total_written > 0 ? total_written : _EFAULT;
         }
 
-        ssize_t nwritten = write(fd_no, buffer, chunk);
+        if (fd_no == 1 || fd_no == 2) {
+            char *term_buffer = (fd_no == 1) ? stdout_buffer : stderr_buffer;
+            size_t *term_pos = (fd_no == 1) ? &stdout_buffer_pos : &stderr_buffer_pos;
+            size_t term_size = sizeof(stdout_buffer);
+
+            size_t copy_size = chunk;
+            if (*term_pos + copy_size > term_size - 1) {
+                copy_size = term_size - 1 - *term_pos;
+            }
+            if (copy_size > 0) {
+                memcpy(term_buffer + *term_pos, buffer, copy_size);
+                *term_pos += copy_size;
+                term_buffer[*term_pos] = '\0';
+            }
+        }
+
+        ssize_t nwritten = fakefs_write(&global_fakefs, fd_no, buffer, chunk);
 
         if (nwritten < 0) {
-            return total_written > 0 ? total_written : -errno;
+            printf("[syscall] sys_write: fakefs_write failed for fd=%d, trying Darwin write\n", fd_no);
+            nwritten = write(fd_no, buffer, chunk);
+            if (nwritten < 0) {
+                return total_written > 0 ? total_written : -errno;
+            }
         }
 
         total_written += nwritten;
@@ -134,6 +187,7 @@ dword_t sys_write(fd_t fd_no, addr_t buf_addr, dword_t size)
         }
     }
 
+    printf("[syscall] sys_write: fd=%d, total_written=%d\n", fd_no, total_written);
     return total_written;
 }
 
@@ -189,8 +243,18 @@ dword_t sys_stat64(addr_t path_addr, addr_t statbuf_addr)
         return _EFAULT;
     }
 
-    if (stat(path, &st) < 0) {
-        return -errno;
+    printf("[syscall] sys_stat64: path=%s\n", path);
+
+    int result = fakefs_stat(&global_fakefs, path, &st);
+    if (result < 0) {
+        if (strncmp(path, "/dev/", 5) == 0 || strncmp(path, "/proc/", 6) == 0) {
+            printf("[syscall] sys_stat64: fakefs failed for %s, trying Darwin stat\n", path);
+            if (stat(path, &st) < 0) {
+                return -errno;
+            }
+        } else {
+            return -errno;
+        }
     }
 
     darwin_to_linux_stat(&st, &lst);
@@ -212,8 +276,18 @@ dword_t sys_lstat64(addr_t path_addr, addr_t statbuf_addr)
         return _EFAULT;
     }
 
-    if (lstat(path, &st) < 0) {
-        return -errno;
+    printf("[syscall] sys_lstat64: path=%s\n", path);
+
+    int result = fakefs_lstat(&global_fakefs, path, &st);
+    if (result < 0) {
+        if (strncmp(path, "/dev/", 5) == 0 || strncmp(path, "/proc/", 6) == 0) {
+            printf("[syscall] sys_lstat64: fakefs failed for %s, trying Darwin lstat\n", path);
+            if (lstat(path, &st) < 0) {
+                return -errno;
+            }
+        } else {
+            return -errno;
+        }
     }
 
     darwin_to_linux_stat(&st, &lst);
@@ -230,8 +304,14 @@ dword_t sys_fstat64(fd_t fd_no, addr_t statbuf_addr)
     struct stat st;
     struct linux_stat64 lst;
 
-    if (fstat(fd_no, &st) < 0) {
-        return -errno;
+    printf("[syscall] sys_fstat64: fd=%d\n", fd_no);
+
+    int result = fakefs_fstat(&global_fakefs, fd_no, &st);
+    if (result < 0) {
+        printf("[syscall] sys_fstat64: fakefs failed for fd=%d, trying Darwin fstat\n", fd_no);
+        if (fstat(fd_no, &st) < 0) {
+            return -errno;
+        }
     }
 
     darwin_to_linux_stat(&st, &lst);
@@ -243,38 +323,57 @@ dword_t sys_fstat64(fd_t fd_no, addr_t statbuf_addr)
     return 0;
 }
 
+static char virtual_cwd[4096] = "/";
+
 dword_t sys_getcwd(addr_t buf_addr, dword_t size)
 {
-    char cwd[4096];
+    printf("[syscall] sys_getcwd\n");
 
-    if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        return -errno;
-    }
-
-    size_t len = strlen(cwd) + 1;
+    size_t len = strlen(virtual_cwd) + 1;
     if (len > (size_t)size) {
         return _ERANGE;
     }
 
-    if (user_write_string(buf_addr, cwd) < 0) {
+    if (user_write_string(buf_addr, virtual_cwd) < 0) {
         return _EFAULT;
     }
 
+    printf("[syscall] sys_getcwd: returning %s\n", virtual_cwd);
     return len;
 }
 
 dword_t sys_chdir(addr_t path_addr)
 {
     char path[4096];
+    struct stat st;
 
     if (user_read_string(path_addr, path, sizeof(path)) < 0) {
         return _EFAULT;
     }
 
-    if (chdir(path) < 0) {
+    printf("[syscall] sys_chdir: path=%s\n", path);
+
+    int result = fakefs_stat(&global_fakefs, path, &st);
+    if (result < 0) {
         return -errno;
     }
 
+    if (!S_ISDIR(st.st_mode)) {
+        return -_ENOTDIR;
+    }
+
+    if (path[0] == '/') {
+        strncpy(virtual_cwd, path, sizeof(virtual_cwd) - 1);
+        virtual_cwd[sizeof(virtual_cwd) - 1] = '\0';
+    } else {
+        size_t cwd_len = strlen(virtual_cwd);
+        if (cwd_len > 0 && virtual_cwd[cwd_len - 1] != '/') {
+            strncat(virtual_cwd, "/", sizeof(virtual_cwd) - cwd_len - 1);
+        }
+        strncat(virtual_cwd, path, sizeof(virtual_cwd) - strlen(virtual_cwd) - 1);
+    }
+
+    printf("[syscall] sys_chdir: new cwd=%s\n", virtual_cwd);
     return 0;
 }
 
@@ -286,7 +385,10 @@ dword_t sys_mkdir(addr_t path_addr, mode_t_ mode)
         return _EFAULT;
     }
 
-    if (mkdir(path, mode) < 0) {
+    printf("[syscall] sys_mkdir: path=%s, mode=0%o\n", path, mode);
+
+    int result = fakefs_mkdir(&global_fakefs, path, mode);
+    if (result < 0) {
         return -errno;
     }
 
@@ -301,7 +403,10 @@ dword_t sys_rmdir(addr_t path_addr)
         return _EFAULT;
     }
 
-    if (rmdir(path) < 0) {
+    printf("[syscall] sys_rmdir: path=%s\n", path);
+
+    int result = fakefs_rmdir(&global_fakefs, path);
+    if (result < 0) {
         return -errno;
     }
 
@@ -316,6 +421,8 @@ dword_t sys_link(addr_t src_addr, addr_t dst_addr)
         user_read_string(dst_addr, dst, sizeof(dst)) < 0) {
         return _EFAULT;
     }
+
+    printf("[syscall] sys_link: src=%s, dst=%s (using Darwin fallback)\n", src, dst);
 
     if (link(src, dst) < 0) {
         return -errno;
@@ -332,9 +439,34 @@ dword_t sys_unlink(addr_t path_addr)
         return _EFAULT;
     }
 
-    if (unlink(path) < 0) {
+    printf("[syscall] sys_unlink: path=%s\n", path);
+
+    int result = fakefs_unlink(&global_fakefs, path);
+    if (result < 0) {
         return -errno;
     }
 
     return 0;
+}
+
+const char *get_stdout_buffer(void)
+{
+    return stdout_buffer;
+}
+
+const char *get_stderr_buffer(void)
+{
+    return stderr_buffer;
+}
+
+void clear_stdout_buffer(void)
+{
+    stdout_buffer_pos = 0;
+    stdout_buffer[0] = '\0';
+}
+
+void clear_stderr_buffer(void)
+{
+    stderr_buffer_pos = 0;
+    stderr_buffer[0] = '\0';
 }

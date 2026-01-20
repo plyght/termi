@@ -157,6 +157,12 @@ int fakefs_lstat(struct fakefs *fs, const char *path, struct stat *statbuf)
     return 0;
 }
 
+int fakefs_fstat(struct fakefs *fs, int fd, struct stat *statbuf)
+{
+    (void)fs;
+    return fstat(fd, statbuf);
+}
+
 int fakefs_mkdir(struct fakefs *fs, const char *path, mode_t mode)
 {
     db_begin_write(&fs->db);
