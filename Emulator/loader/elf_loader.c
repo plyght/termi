@@ -87,7 +87,9 @@ int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_i
                    (unsigned long long)vaddr, (unsigned long long)memsz, 
                    (unsigned long long)filesz, prot);
 
-            if (arm64_mmu_map(mmu, vaddr, memsz, prot) < 0) {
+            // Map with write permission during loading, we'll fix protection later if needed
+            uint32_t load_prot = prot | PROT_WRITE;
+            if (arm64_mmu_map(mmu, vaddr, memsz, load_prot) < 0) {
                 printf("[ELF Loader] ERROR: MMU map failed for vaddr=0x%llx\n", (unsigned long long)vaddr);
                 return -1;
             }
@@ -97,6 +99,8 @@ int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_i
                     printf("[ELF Loader] ERROR: MMU write failed for vaddr=0x%llx\n", (unsigned long long)vaddr);
                     return -1;
                 }
+                printf("[ELF Loader] Wrote %llu bytes to vaddr=0x%llx\n", 
+                       (unsigned long long)filesz, (unsigned long long)vaddr);
             }
 
             if (memsz > filesz) {
@@ -104,6 +108,8 @@ int elf_load_memory(const void *elf_data, size_t size, void *mmu_ptr, elf_load_i
                 for (uint64_t j = filesz; j < memsz; j++) {
                     arm64_mmu_write(mmu, vaddr + j, &zero, 1);
                 }
+                printf("[ELF Loader] Zeroed %llu bytes at vaddr=0x%llx\n", 
+                       (unsigned long long)(memsz - filesz), (unsigned long long)(vaddr + filesz));
             }
         }
     }
