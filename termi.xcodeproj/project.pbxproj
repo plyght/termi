@@ -8,42 +8,42 @@
 
 /* Begin PBXBuildFile section */
 		11A2F9771EDC404E9675174601 /* TermiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A2F9771EDC404E96751746 /* TermiApp.swift */; };
-		95E384005F5E4E91B6519BE801 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E384005F5E4E91B6519BE8 /* ContentView.swift */; };
-		AE528A98A3AC4D4D85A3426B01 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE528A98A3AC4D4D85A3426B /* TerminalView.swift */; };
+		1C6632F5D7384D3C9E2F08C801 /* libsyscall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */; };
 		356CCE596E654B34B22A3A6501 /* EmulatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CCE596E654B34B22A3A65 /* EmulatorManager.swift */; };
 		5862135D4F1444DE885DC71601 /* EmulatorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5862135D4F1444DE885DC716 /* EmulatorBridge.swift */; };
-		D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */; };
-		1C6632F5D7384D3C9E2F08C801 /* libsyscall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */; };
+		95E384005F5E4E91B6519BE801 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E384005F5E4E91B6519BE8 /* ContentView.swift */; };
 		AA11BB22CC33DD44EE55FF6601 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* SessionManager.swift */; };
+		AA77BB88CC99DD00EE11FF2201 /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */; };
+		AE528A98A3AC4D4D85A3426B01 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE528A98A3AC4D4D85A3426B /* TerminalView.swift */; };
+		ALPINE00ROOTFS00FOLDER0101 /* rootfs in Resources */ = {isa = PBXBuildFile; fileRef = ALPINE00ROOTFS00FOLDER01 /* rootfs */; };
 		BB22CC33DD44EE55FF66AA7701 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66AA77 /* ThemeManager.swift */; };
 		CC33DD44EE55FF66AA77BB8801 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC33DD44EE55FF66AA77BB88 /* TabBarView.swift */; };
+		D1C8C56877034D46AC4C18BD01 /* FilesystemBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */; };
 		DD44EE55FF66AA77BB88CC9901 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66AA77BB88CC99 /* SettingsView.swift */; };
 		EE55FF66AA77BB88CC99DD0001 /* ThemePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */; };
 		FF66AA77BB88CC99DD00EE1101 /* SplitPaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */; };
-		AA77BB88CC99DD00EE11FF2201 /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */; };
-		ALPINE00ROOTFS00FOLDER0101 /* rootfs in Resources */ = {isa = PBXBuildFile; fileRef = ALPINE00ROOTFS00FOLDER01 /* rootfs */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		11A2F9771EDC404E96751746 /* TermiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermiApp.swift; sourceTree = "<group>"; };
-		95E384005F5E4E91B6519BE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		AE528A98A3AC4D4D85A3426B /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
+		1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsyscall.a; path = ../Kernel/syscall/libsyscall.a; sourceTree = "<group>"; };
 		356CCE596E654B34B22A3A65 /* EmulatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorManager.swift; sourceTree = "<group>"; };
-		5862135D4F1444DE885DC716 /* EmulatorBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorBridge.swift; sourceTree = "<group>"; };
-		D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesystemBridge.swift; sourceTree = "<group>"; };
 		39E365EFFA8045AA93502BE2 /* termi-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "termi-Bridging-Header.h"; sourceTree = "<group>"; };
 		50215F9829E546E893B1A6E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5862135D4F1444DE885DC716 /* EmulatorBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorBridge.swift; sourceTree = "<group>"; };
 		8143C342E68F46FB9897FD28 /* termi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = termi.entitlements; sourceTree = "<group>"; };
-		1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsyscall.a; path = ../Kernel/syscall/libsyscall.a; sourceTree = "<group>"; };
-		D89B64CC17DE4B49A922426C02 /* termi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = termi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		95E384005F5E4E91B6519BE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF66 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
+		AE528A98A3AC4D4D85A3426B /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
+		ALPINE00ROOTFS00FOLDER01 /* rootfs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rootfs; path = ../Alpine/rootfs; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66AA77 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		CC33DD44EE55FF66AA77BB88 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		D1C8C56877034D46AC4C18BD /* FilesystemBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesystemBridge.swift; sourceTree = "<group>"; };
+		D89B64CC17DE4B49A922426C02 /* termi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = termi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD44EE55FF66AA77BB88CC99 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EE55FF66AA77BB88CC99DD00 /* ThemePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePickerView.swift; sourceTree = "<group>"; };
 		FF66AA77BB88CC99DD00EE11 /* SplitPaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitPaneView.swift; sourceTree = "<group>"; };
-		AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
-		ALPINE00ROOTFS00FOLDER01 /* rootfs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rootfs; path = ../Alpine/rootfs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,17 +58,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A8988486AD7142BBB8DB2E5D = {
-			isa = PBXGroup;
-			children = (
-				380F55EA2967496CBAA5046C /* App */,
-				D3B0A80F949B4058A875BE8E /* Bridge */,
-				5B0F6A9EA555421796D9B403 /* Resources */,
-				AE6AAB08909840F4BBA21B39 /* Frameworks */,
-				D89B64CC17DE4B49A922426C03 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
 		380F55EA2967496CBAA5046C /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +66,16 @@
 				C1E897D65C2A4D5A9786979A /* Managers */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		5B0F6A9EA555421796D9B403 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				50215F9829E546E893B1A6E5 /* Info.plist */,
+				8143C342E68F46FB9897FD28 /* termi.entitlements */,
+				ALPINE00ROOTFS00FOLDER01 /* rootfs */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		A548DADC81F84CB6A8DFA7E7 /* UI */ = {
@@ -91,6 +90,25 @@
 				AA77BB88CC99DD00EE11FF22 /* KeyboardAccessory.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		A8988486AD7142BBB8DB2E5D = {
+			isa = PBXGroup;
+			children = (
+				380F55EA2967496CBAA5046C /* App */,
+				D3B0A80F949B4058A875BE8E /* Bridge */,
+				5B0F6A9EA555421796D9B403 /* Resources */,
+				AE6AAB08909840F4BBA21B39 /* Frameworks */,
+				D89B64CC17DE4B49A922426C03 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AE6AAB08909840F4BBA21B39 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C1E897D65C2A4D5A9786979A /* Managers */ = {
@@ -111,24 +129,6 @@
 				39E365EFFA8045AA93502BE2 /* termi-Bridging-Header.h */,
 			);
 			path = Bridge;
-			sourceTree = "<group>";
-		};
-		5B0F6A9EA555421796D9B403 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				50215F9829E546E893B1A6E5 /* Info.plist */,
-				8143C342E68F46FB9897FD28 /* termi.entitlements */,
-				ALPINE00ROOTFS00FOLDER01 /* rootfs */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		AE6AAB08909840F4BBA21B39 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1C6632F5D7384D3C9E2F08C8 /* libsyscall.a */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D89B64CC17DE4B49A922426C03 /* Products */ = {
@@ -227,6 +227,121 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		66DD4DA25A4349F1BD660A30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/termi.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CS93X9KC5H;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/include",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem",
+				);
+				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem/fakefs",
+					"$(PROJECT_DIR)/Bridge",
+					"$(PROJECT_DIR)/Emulator",
+					"$(PROJECT_DIR)/Filesystem",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"-lsyscall",
+					"-lemulatorwrapper",
+					"-lemulator",
+					"-lfakefs",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.termi.appp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Bridge/termi-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CEAC235106924611BDC1147A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		CFD1D1025AD34B9F8A62A44B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -290,131 +405,24 @@
 			};
 			name = Debug;
 		};
-		CEAC235106924611BDC1147A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		66DD4DA25A4349F1BD660A30 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Resources/termi.entitlements;
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Kernel/syscall",
-					"$(PROJECT_DIR)/Filesystem/fakefs",
-					"$(PROJECT_DIR)/Bridge",
-					"$(PROJECT_DIR)/Emulator",
-					"$(PROJECT_DIR)/Filesystem",
-				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Kernel/include",
-					"$(PROJECT_DIR)/Kernel/syscall",
-					"$(PROJECT_DIR)/Filesystem",
-				);
-				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-lsqlite3",
-					"-lsyscall",
-					"-lemulatorwrapper",
-					"-lemulator",
-					"-lfakefs",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Bridge/termi-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		DD473DD6FEA34CD0B35B9361 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Resources/termi.entitlements;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CS93X9KC5H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Kernel/include",
+					"$(PROJECT_DIR)/Kernel/syscall",
+					"$(PROJECT_DIR)/Filesystem",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -434,12 +442,6 @@
 					"$(PROJECT_DIR)/Emulator",
 					"$(PROJECT_DIR)/Filesystem",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Kernel/include",
-					"$(PROJECT_DIR)/Kernel/syscall",
-					"$(PROJECT_DIR)/Filesystem",
-				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-lsqlite3",
@@ -448,7 +450,7 @@
 					"-lemulator",
 					"-lfakefs",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.termi.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.termi.appp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -465,20 +467,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FCC0CB44430C428F84EC46A2 /* Build configuration list for PBXProject "termi" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CFD1D1025AD34B9F8A62A44B /* Debug */,
-				CEAC235106924611BDC1147A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		F8FEB88D58FB47BE8A84166D /* Build configuration list for PBXNativeTarget "termi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66DD4DA25A4349F1BD660A30 /* Debug */,
 				DD473DD6FEA34CD0B35B9361 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FCC0CB44430C428F84EC46A2 /* Build configuration list for PBXProject "termi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFD1D1025AD34B9F8A62A44B /* Debug */,
+				CEAC235106924611BDC1147A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

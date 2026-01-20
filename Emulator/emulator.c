@@ -1,4 +1,5 @@
 #include "emulator.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -72,7 +73,16 @@ int arm64_emulator_load_elf_memory(arm64_emulator_t *emu, const void *data, size
 
 void arm64_emulator_run(arm64_emulator_t *emu)
 {
+    printf("[CPU] Starting execution at PC=0x%llx, SP=0x%llx\n",
+           (unsigned long long)emu->cpu->pc, (unsigned long long)emu->cpu->sp);
+    
     arm64_interpreter_run(emu->cpu, 0);
+    
+    if (emu->cpu->halted) {
+        printf("[CPU] Execution halted, exit_code=%d\n", emu->cpu->exit_code);
+    } else {
+        printf("[CPU] Execution stopped\n");
+    }
 }
 
 int arm64_emulator_step(arm64_emulator_t *emu)

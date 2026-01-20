@@ -5,6 +5,7 @@ class EmulatorBridge {
 
     private var sessionMap: [UUID: TerminalSession] = [:]
     private var sessionEmulators: [UUID: UnsafeMutableRawPointer] = [:]
+    private var outputTimers: [UUID: Timer] = [:]
     private var emulatorQueue = DispatchQueue(label: "com.termi.emulator", qos: .userInteractive)
     private var isInitialized = false
 
@@ -49,21 +50,67 @@ class EmulatorBridge {
             return
         }
         
-        let alpineRootfs = (bundlePath as NSString).appendingPathComponent("rootfs")
-        let metaDB = (alpineRootfs as NSString).appendingPathComponent("meta.db")
-        let dataPath = (alpineRootfs as NSString).appendingPathComponent("data")
+        let bundleRootfs = (bundlePath as NSString).appendingPathComponent("rootfs")
         
-        print("📂 [EmulatorBridge] initializeFilesystem - Alpine rootfs: \(alpineRootfs)")
-        print("📂 [EmulatorBridge] initializeFilesystem - Meta DB: \(metaDB)")
-        print("📂 [EmulatorBridge] initializeFilesystem - Data path: \(dataPath)")
-        
-        let dbExists = FileManager.default.fileExists(atPath: metaDB)
-        print("📊 [EmulatorBridge] initializeFilesystem - DB exists: \(dbExists)")
-        
-        if !dbExists {
-            print("❌ [EmulatorBridge] initializeFilesystem - Alpine rootfs not found! Need to run setup_alpine.sh")
+        guard let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            print("❌ [EmulatorBridge] initializeFilesystem - Failed to get Application Support directory")
             return
         }
+        
+        let writableRootfs = appSupportURL.appendingPathComponent("rootfs").path
+        let metaDB = (writableRootfs as NSString).appendingPathComponent("meta.db")
+        let dataPath = (writableRootfs as NSString).appendingPathComponent("data")
+        
+        print("📂 [EmulatorBridge] initializeFilesystem - Bundle rootfs: \(bundleRootfs)")
+        print("📂 [EmulatorBridge] initializeFilesystem - Writable rootfs: \(writableRootfs)")
+        
+        let dbExists = FileManager.default.fileExists(atPath: metaDB)
+        
+        if !dbExists {
+            print("📦 [EmulatorBridge] initializeFilesystem - First launch, copying rootfs from bundle to writable location")
+            
+            do {
+                if !FileManager.default.fileExists(atPath: writableRootfs) {
+                    try FileManager.default.createDirectory(atPath: writableRootfs, withIntermediateDirectories: true)
+                }
+                
+                let bundleMetaDB = (bundleRootfs as NSString).appendingPathComponent("meta.db")
+                let bundleDataPath = (bundleRootfs as NSString).appendingPathComponent("data")
+                
+                if FileManager.default.fileExists(atPath: bundleMetaDB) {
+                    try FileManager.default.copyItem(atPath: bundleMetaDB, toPath: metaDB)
+                    print("✅ [EmulatorBridge] initializeFilesystem - Copied meta.db")
+                }
+                
+                if FileManager.default.fileExists(atPath: bundleDataPath) {
+                    try FileManager.default.copyItem(atPath: bundleDataPath, toPath: dataPath)
+                    print("✅ [EmulatorBridge] initializeFilesystem - Copied data directory")
+                }
+                
+                let shmFile = (bundleRootfs as NSString).appendingPathComponent("meta.db-shm")
+                let walFile = (bundleRootfs as NSString).appendingPathComponent("meta.db-wal")
+                
+                if FileManager.default.fileExists(atPath: shmFile) {
+                    let destShm = (writableRootfs as NSString).appendingPathComponent("meta.db-shm")
+                    try? FileManager.default.copyItem(atPath: shmFile, toPath: destShm)
+                }
+                
+                if FileManager.default.fileExists(atPath: walFile) {
+                    let destWal = (writableRootfs as NSString).appendingPathComponent("meta.db-wal")
+                    try? FileManager.default.copyItem(atPath: walFile, toPath: destWal)
+                }
+                
+                print("✅ [EmulatorBridge] initializeFilesystem - Rootfs copied to writable location")
+            } catch {
+                print("❌ [EmulatorBridge] initializeFilesystem - Failed to copy rootfs: \(error)")
+                return
+            }
+        } else {
+            print("📊 [EmulatorBridge] initializeFilesystem - Using existing writable rootfs")
+        }
+        
+        print("📂 [EmulatorBridge] initializeFilesystem - Meta DB: \(metaDB)")
+        print("📂 [EmulatorBridge] initializeFilesystem - Data path: \(dataPath)")
         
         let result = metaDB.withCString { dbPathPtr in
             dataPath.withCString { dataPathPtr in
@@ -150,10 +197,13 @@ class EmulatorBridge {
     private func startOutputPolling(for session: TerminalSession, handle: UnsafeMutableRawPointer) {
         print("📡 [EmulatorBridge] startOutputPolling - Starting output polling for session: \(session.id)")
         
-        emulatorQueue.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        outputTimers[session.id]?.invalidate()
+        
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             guard self.sessionEmulators[session.id] != nil else {
                 print("🛑 [EmulatorBridge] startOutputPolling - Session \(session.id) no longer active")
+                self.stopOutputPolling(for: session)
                 return
             }
             
@@ -167,13 +217,23 @@ class EmulatorBridge {
                     session.receiveOutput(data)
                 }
             }
-            
-            self.startOutputPolling(for: session, handle: handle)
         }
+        
+        outputTimers[session.id] = timer
+        print("✅ [EmulatorBridge] startOutputPolling - Timer created for session: \(session.id)")
+    }
+    
+    private func stopOutputPolling(for session: TerminalSession) {
+        print("🛑 [EmulatorBridge] stopOutputPolling - Stopping output polling for session: \(session.id)")
+        outputTimers[session.id]?.invalidate()
+        outputTimers.removeValue(forKey: session.id)
+        print("✅ [EmulatorBridge] stopOutputPolling - Timer stopped and removed for session: \(session.id)")
     }
 
     private func destroyPTY(for session: TerminalSession) {
         print("🗑️  [EmulatorBridge] destroyPTY - Destroying PTY for session: \(session.id)")
+        
+        stopOutputPolling(for: session)
         
         guard let handle = sessionEmulators[session.id] else {
             print("⚠️  [EmulatorBridge] destroyPTY - No emulator handle found for session: \(session.id)")

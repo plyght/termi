@@ -1,6 +1,6 @@
 CC = clang
-SDK = iphonesimulator
-CFLAGS = -Wall -Wextra -O2 -I. -I/opt/homebrew/opt/libarchive/include -target arm64-apple-ios16.0-simulator -isysroot $(shell xcrun --sdk $(SDK) --show-sdk-path)
+SDK = iphoneos
+CFLAGS = -Wall -Wextra -O2 -I. -I/opt/homebrew/opt/libarchive/include -target arm64-apple-ios16.0 -isysroot $(shell xcrun --sdk $(SDK) --show-sdk-path)
 LDFLAGS = -L/opt/homebrew/opt/libarchive/lib -lsqlite3 -larchive
 
 FAKEFS_OBJS = fakefs/fake-db.o fakefs/fake.o fakefs/proc_sys_dev.o

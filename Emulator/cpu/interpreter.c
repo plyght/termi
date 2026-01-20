@@ -108,6 +108,58 @@ static int execute_instruction(arm64_cpu_t *cpu, arm64_insn_t *insn)
         cpu->x[insn->rd] = cpu->x[insn->rn] ^ cpu->x[insn->rm];
         break;
 
+    case ARM64_INSN_AND_IMM: {
+        uint64_t rn_val = (insn->rn == 31) ? 0 : cpu->x[insn->rn];
+        uint64_t result = rn_val & insn->imm;
+        if (insn->sf == 0) {
+            result &= 0xFFFFFFFF;
+        }
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_ORR_IMM: {
+        uint64_t rn_val = (insn->rn == 31) ? 0 : cpu->x[insn->rn];
+        uint64_t result = rn_val | insn->imm;
+        if (insn->sf == 0) {
+            result &= 0xFFFFFFFF;
+        }
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_EOR_IMM: {
+        uint64_t rn_val = (insn->rn == 31) ? 0 : cpu->x[insn->rn];
+        uint64_t result = rn_val ^ insn->imm;
+        if (insn->sf == 0) {
+            result &= 0xFFFFFFFF;
+        }
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_ANDS_IMM: {
+        uint64_t rn_val = (insn->rn == 31) ? 0 : cpu->x[insn->rn];
+        uint64_t result = rn_val & insn->imm;
+        if (insn->sf == 0) {
+            result &= 0xFFFFFFFF;
+        }
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = result;
+        }
+        cpu->pstate.z = (result == 0) ? 1 : 0;
+        cpu->pstate.n = (result >> 63) & 1;
+        cpu->pstate.c = 0;
+        cpu->pstate.v = 0;
+        break;
+    }
+
     case ARM64_INSN_MOVZ:
         cpu->x[insn->rd] = insn->imm << insn->shift;
         break;
@@ -249,9 +301,15 @@ static int execute_instruction(arm64_cpu_t *cpu, arm64_insn_t *insn)
 
     case ARM64_INSN_SVC: {
         int syscall_num = cpu->x[8];
+        printf("🔧 [Interpreter] SVC syscall #%d (x0=%llu, x1=%llu, x2=%llu)\n", 
+               syscall_num, 
+               (unsigned long long)cpu->x[0], 
+               (unsigned long long)cpu->x[1],
+               (unsigned long long)cpu->x[2]);
         long ret = handle_syscall(syscall_num, cpu->x[0], cpu->x[1], cpu->x[2], cpu->x[3],
                                   cpu->x[4], cpu->x[5]);
         cpu->x[0] = ret;
+        printf("🔧 [Interpreter] SVC returned: %ld\n", ret);
         break;
     }
 
@@ -264,6 +322,8 @@ static int execute_instruction(arm64_cpu_t *cpu, arm64_insn_t *insn)
         break;
 
     default:
+        printf("❌ [Interpreter] Unknown instruction type %d at PC=0x%llx (raw=0x%08x)\n",
+               insn->type, (unsigned long long)cpu->pc, insn->raw);
         return -1;
     }
 
@@ -286,6 +346,8 @@ int arm64_interpreter_step(arm64_cpu_t *cpu)
 
     arm64_insn_t insn;
     if (arm64_decode(insn_raw, &insn) == 0) {
+        printf("❌ [Interpreter] Failed to decode instruction 0x%08x at PC=0x%llx\n",
+               insn_raw, (unsigned long long)cpu->pc);
         return -1;
     }
 
@@ -298,8 +360,18 @@ void arm64_interpreter_run(arm64_cpu_t *cpu, uint64_t max_insns)
 
     while (!cpu->halted && (max_insns == 0 || count < max_insns)) {
         if (arm64_interpreter_step(cpu) < 0) {
+            printf("[CPU] Interpreter step failed at PC=0x%llx after %llu instructions\n",
+                   (unsigned long long)cpu->pc, (unsigned long long)count);
             break;
         }
         count++;
+        
+        if (count % 100000 == 0) {
+            printf("[CPU] Executed %llu instructions, PC=0x%llx\n",
+                   (unsigned long long)count, (unsigned long long)cpu->pc);
+        }
     }
+    
+    printf("[CPU] Execution loop finished: %llu instructions executed\n",
+           (unsigned long long)count);
 }

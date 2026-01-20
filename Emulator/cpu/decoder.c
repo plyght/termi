@@ -1,5 +1,6 @@
 #include "decoder.h"
 #include <string.h>
+#include <stdio.h>
 
 #define BITS(insn, hi, lo) (((insn) >> (lo)) & ((1u << ((hi) - (lo) + 1)) - 1))
 #define BIT(insn, bit) (((insn) >> (bit)) & 1)
@@ -22,6 +23,35 @@ static int decode_data_proc_imm(uint32_t insn, arm64_insn_t *d)
             d->type = ARM64_INSN_ADD_IMM;
         } else {
             d->type = ARM64_INSN_SUB_IMM;
+        }
+        return 1;
+    }
+
+    if (BITS(insn, 28, 23) == 0x24) {
+        d->sf = BIT(insn, 31);
+        uint8_t opc = BITS(insn, 30, 29);
+        uint8_t N = BIT(insn, 22);
+        uint8_t immr = BITS(insn, 21, 16);
+        uint8_t imms = BITS(insn, 15, 10);
+        d->rn = BITS(insn, 9, 5);
+        d->rd = BITS(insn, 4, 0);
+
+        uint64_t mask = (1ULL << (imms + 1)) - 1;
+        if (!d->sf) {
+            mask &= 0xFFFFFFFF;
+        }
+        d->imm = mask;
+
+        if (opc == 0x0) {
+            d->type = ARM64_INSN_AND_IMM;
+        } else if (opc == 0x1) {
+            d->type = ARM64_INSN_ORR_IMM;
+        } else if (opc == 0x2) {
+            d->type = ARM64_INSN_EOR_IMM;
+        } else if (opc == 0x3) {
+            d->type = ARM64_INSN_ANDS_IMM;
+        } else {
+            return 0;
         }
         return 1;
     }
@@ -61,6 +91,7 @@ static int decode_data_proc_imm(uint32_t insn, arm64_insn_t *d)
         return 1;
     }
 
+    printf("❌ [Decoder] Unknown data_proc_imm pattern: 0x%08x (op0=0x%02x)\n", insn, op0);
     return 0;
 }
 
@@ -309,7 +340,7 @@ int arm64_decode(uint32_t insn, arm64_insn_t *decoded)
 
     uint8_t op0 = BITS(insn, 28, 25);
 
-    if (op0 == 0x2 || op0 == 0x3) {
+    if ((op0 >= 0xA && op0 <= 0xB) || op0 == 0x2 || op0 == 0x3) {
         return decode_branch(insn, decoded);
     }
 
