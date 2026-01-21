@@ -1030,6 +1030,449 @@ static int execute_instruction(arm64_cpu_t *cpu, arm64_insn_t *insn)
     case ARM64_INSN_NOP:
         break;
 
+    case ARM64_INSN_CMN_IMM: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = insn->imm;
+        uint64_t result = a + b;
+        update_flags_add(cpu, a, b, result);
+        break;
+    }
+
+    case ARM64_INSN_CMN_REG: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = cpu->x[insn->rm];
+        uint64_t result = a + b;
+        update_flags_add(cpu, a, b, result);
+        break;
+    }
+
+    case ARM64_INSN_ADDS_IMM: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = insn->imm;
+        uint64_t result = a + b;
+        update_flags_add(cpu, a, b, result);
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = insn->sf ? result : (uint32_t)result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_ADDS_REG: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = cpu->x[insn->rm];
+        uint64_t result = a + b;
+        update_flags_add(cpu, a, b, result);
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = insn->sf ? result : (uint32_t)result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_SUBS_IMM: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = insn->imm;
+        uint64_t result = a - b;
+        update_flags_sub(cpu, a, b, result);
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = insn->sf ? result : (uint32_t)result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_ANDS_REG: {
+        uint64_t result = cpu->x[insn->rn] & cpu->x[insn->rm];
+        cpu->pstate.z = (result == 0) ? 1 : 0;
+        cpu->pstate.n = (result >> 63) & 1;
+        cpu->pstate.c = 0;
+        cpu->pstate.v = 0;
+        if (insn->rd != 31) {
+            cpu->x[insn->rd] = result;
+        }
+        break;
+    }
+
+    case ARM64_INSN_SBC: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = cpu->x[insn->rm];
+        uint64_t result = a - b - (1 - cpu->pstate.c);
+        cpu->x[insn->rd] = insn->sf ? result : (uint32_t)result;
+        break;
+    }
+
+    case ARM64_INSN_ADC: {
+        uint64_t a = cpu->x[insn->rn];
+        uint64_t b = cpu->x[insn->rm];
+        uint64_t result = a + b + cpu->pstate.c;
+        cpu->x[insn->rd] = insn->sf ? result : (uint32_t)result;
+        break;
+    }
+
+    case ARM64_INSN_REV: {
+        uint64_t val = cpu->x[insn->rn];
+        if (insn->sf) {
+            cpu->x[insn->rd] = __builtin_bswap64(val);
+        } else {
+            cpu->x[insn->rd] = __builtin_bswap32((uint32_t)val);
+        }
+        break;
+    }
+
+    case ARM64_INSN_REV16: {
+        uint64_t val = cpu->x[insn->rn];
+        uint64_t result = 0;
+        if (insn->sf) {
+            result = ((val & 0x00FF00FF00FF00FFULL) << 8) | ((val & 0xFF00FF00FF00FF00ULL) >> 8);
+        } else {
+            result = ((val & 0x00FF00FFULL) << 8) | ((val & 0xFF00FF00ULL) >> 8);
+        }
+        cpu->x[insn->rd] = result;
+        break;
+    }
+
+    case ARM64_INSN_CLZ: {
+        uint64_t val = cpu->x[insn->rn];
+        if (insn->sf) {
+            cpu->x[insn->rd] = val ? __builtin_clzll(val) : 64;
+        } else {
+            cpu->x[insn->rd] = val ? __builtin_clz((uint32_t)val) : 32;
+        }
+        break;
+    }
+
+    case ARM64_INSN_RBIT: {
+        uint64_t val = cpu->x[insn->rn];
+        uint64_t result = 0;
+        int bits = insn->sf ? 64 : 32;
+        for (int i = 0; i < bits; i++) {
+            if (val & (1ULL << i)) {
+                result |= (1ULL << (bits - 1 - i));
+            }
+        }
+        cpu->x[insn->rd] = result;
+        break;
+    }
+
+    case ARM64_INSN_SMADDL: {
+        int64_t a = (int32_t)cpu->x[insn->rn];
+        int64_t b = (int32_t)cpu->x[insn->rm];
+        int64_t c = cpu->x[insn->ra];
+        cpu->x[insn->rd] = a * b + c;
+        break;
+    }
+
+    case ARM64_INSN_UMULL: {
+        uint64_t a = (uint32_t)cpu->x[insn->rn];
+        uint64_t b = (uint32_t)cpu->x[insn->rm];
+        cpu->x[insn->rd] = a * b;
+        break;
+    }
+
+    case ARM64_INSN_SMULL: {
+        int64_t a = (int32_t)cpu->x[insn->rn];
+        int64_t b = (int32_t)cpu->x[insn->rm];
+        cpu->x[insn->rd] = a * b;
+        break;
+    }
+
+    case ARM64_INSN_SMULH: {
+        __int128 a = (int64_t)cpu->x[insn->rn];
+        __int128 b = (int64_t)cpu->x[insn->rm];
+        __int128 result = a * b;
+        cpu->x[insn->rd] = (uint64_t)(result >> 64);
+        break;
+    }
+
+    case ARM64_INSN_UMULH: {
+        __uint128_t a = cpu->x[insn->rn];
+        __uint128_t b = cpu->x[insn->rm];
+        __uint128_t result = a * b;
+        cpu->x[insn->rd] = (uint64_t)(result >> 64);
+        break;
+    }
+
+    case ARM64_INSN_CCMP_IMM: {
+        if (check_condition(cpu, insn->cond)) {
+            uint64_t a = cpu->x[insn->rn];
+            uint64_t b = insn->imm;
+            uint64_t result = a - b;
+            update_flags_sub(cpu, a, b, result);
+        } else {
+            cpu->pstate.n = (insn->nzcv >> 3) & 1;
+            cpu->pstate.z = (insn->nzcv >> 2) & 1;
+            cpu->pstate.c = (insn->nzcv >> 1) & 1;
+            cpu->pstate.v = insn->nzcv & 1;
+        }
+        break;
+    }
+
+    case ARM64_INSN_CCMP_REG: {
+        if (check_condition(cpu, insn->cond)) {
+            uint64_t a = cpu->x[insn->rn];
+            uint64_t b = cpu->x[insn->imm];
+            uint64_t result = a - b;
+            update_flags_sub(cpu, a, b, result);
+        } else {
+            cpu->pstate.n = (insn->nzcv >> 3) & 1;
+            cpu->pstate.z = (insn->nzcv >> 2) & 1;
+            cpu->pstate.c = (insn->nzcv >> 1) & 1;
+            cpu->pstate.v = insn->nzcv & 1;
+        }
+        break;
+    }
+
+    case ARM64_INSN_CCMN_IMM: {
+        if (check_condition(cpu, insn->cond)) {
+            uint64_t a = cpu->x[insn->rn];
+            uint64_t b = insn->imm;
+            uint64_t result = a + b;
+            update_flags_add(cpu, a, b, result);
+        } else {
+            cpu->pstate.n = (insn->nzcv >> 3) & 1;
+            cpu->pstate.z = (insn->nzcv >> 2) & 1;
+            cpu->pstate.c = (insn->nzcv >> 1) & 1;
+            cpu->pstate.v = insn->nzcv & 1;
+        }
+        break;
+    }
+
+    case ARM64_INSN_CCMN_REG: {
+        if (check_condition(cpu, insn->cond)) {
+            uint64_t a = cpu->x[insn->rn];
+            uint64_t b = cpu->x[insn->imm];
+            uint64_t result = a + b;
+            update_flags_add(cpu, a, b, result);
+        } else {
+            cpu->pstate.n = (insn->nzcv >> 3) & 1;
+            cpu->pstate.z = (insn->nzcv >> 2) & 1;
+            cpu->pstate.c = (insn->nzcv >> 1) & 1;
+            cpu->pstate.v = insn->nzcv & 1;
+        }
+        break;
+    }
+
+    case ARM64_INSN_LDAXR:
+    case ARM64_INSN_LDXR: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint64_t val;
+        if (insn->sf) {
+            if (arm64_mmu_read_u64(mmu, addr, &val) < 0)
+                return -1;
+        } else {
+            uint32_t val32;
+            if (arm64_mmu_read_u32(mmu, addr, &val32) < 0)
+                return -1;
+            val = val32;
+        }
+        cpu->x[insn->rt] = val;
+        cpu->exclusive_addr = addr;
+        break;
+    }
+
+    case ARM64_INSN_LDAXRB: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint8_t val;
+        if (arm64_mmu_read_u8(mmu, addr, &val) < 0)
+            return -1;
+        cpu->x[insn->rt] = val;
+        cpu->exclusive_addr = addr;
+        break;
+    }
+
+    case ARM64_INSN_LDAXRH: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint16_t val;
+        if (arm64_mmu_read_u16(mmu, addr, &val) < 0)
+            return -1;
+        cpu->x[insn->rt] = val;
+        cpu->exclusive_addr = addr;
+        break;
+    }
+
+    case ARM64_INSN_STLXR:
+    case ARM64_INSN_STXR: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint64_t val = cpu->x[insn->rt];
+        if (insn->sf) {
+            if (arm64_mmu_write_u64(mmu, addr, val) < 0)
+                return -1;
+        } else {
+            if (arm64_mmu_write_u32(mmu, addr, (uint32_t)val) < 0)
+                return -1;
+        }
+        cpu->x[insn->rm] = 0;
+        break;
+    }
+
+    case ARM64_INSN_STLXRB: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint8_t val = (uint8_t)cpu->x[insn->rt];
+        if (arm64_mmu_write_u8(mmu, addr, val) < 0)
+            return -1;
+        cpu->x[insn->rm] = 0;
+        break;
+    }
+
+    case ARM64_INSN_STLXRH: {
+        uint64_t addr = (insn->rn == 31 ? cpu->sp : cpu->x[insn->rn]);
+        uint16_t val = (uint16_t)cpu->x[insn->rt];
+        if (arm64_mmu_write_u16(mmu, addr, val) < 0)
+            return -1;
+        cpu->x[insn->rm] = 0;
+        break;
+    }
+
+    case ARM64_INSN_MRS: {
+        uint16_t sysreg = insn->imm;
+        if (sysreg == 0x5e82) {
+            cpu->x[insn->rd] = 0;
+        } else if (sysreg == 0x5e80) {
+            cpu->x[insn->rd] = 4;
+        } else if (sysreg == 0x5e81) {
+            cpu->x[insn->rd] = 0x8444c004;
+        } else {
+            cpu->x[insn->rd] = 0;
+        }
+        break;
+    }
+
+    case ARM64_INSN_MSR:
+        break;
+
+    case ARM64_INSN_DMB:
+    case ARM64_INSN_DSB:
+    case ARM64_INSN_ISB:
+        break;
+
+    case ARM64_INSN_FADD: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double b = *(double*)&cpu->v[insn->vm].d[0];
+        double result = a + b;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FSUB: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double b = *(double*)&cpu->v[insn->vm].d[0];
+        double result = a - b;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FMUL: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double b = *(double*)&cpu->v[insn->vm].d[0];
+        double result = a * b;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FDIV: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double b = *(double*)&cpu->v[insn->vm].d[0];
+        double result = a / b;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FNEG: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double result = -a;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FABS: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double result = a < 0 ? -a : a;
+        cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FCMP:
+    case ARM64_INSN_FCMPE: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        double b = *(double*)&cpu->v[insn->vm].d[0];
+        cpu->pstate.n = (a < b) ? 1 : 0;
+        cpu->pstate.z = (a == b) ? 1 : 0;
+        cpu->pstate.c = (a >= b) ? 1 : 0;
+        cpu->pstate.v = 0;
+        break;
+    }
+
+    case ARM64_INSN_FCSEL: {
+        if (check_condition(cpu, insn->cond)) {
+            cpu->v[insn->vd].d[0] = cpu->v[insn->vn].d[0];
+        } else {
+            cpu->v[insn->vd].d[0] = cpu->v[insn->vm].d[0];
+        }
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FCVT:
+        cpu->v[insn->vd].d[0] = cpu->v[insn->vn].d[0];
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+
+    case ARM64_INSN_FCVTZS: {
+        double a = *(double*)&cpu->v[insn->vn].d[0];
+        if (insn->sf) {
+            cpu->x[insn->rd] = (int64_t)a;
+        } else {
+            cpu->x[insn->rd] = (int32_t)a;
+        }
+        break;
+    }
+
+    case ARM64_INSN_SCVTF: {
+        if (insn->sf) {
+            double result = (double)(int64_t)cpu->x[insn->rn];
+            cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        } else {
+            double result = (double)(int32_t)cpu->x[insn->rn];
+            cpu->v[insn->vd].d[0] = *(uint64_t*)&result;
+        }
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_MOVI: {
+        cpu->v[insn->vd].d[0] = insn->imm;
+        cpu->v[insn->vd].d[1] = insn->imm;
+        break;
+    }
+
+    case ARM64_INSN_DUP: {
+        uint64_t val = cpu->v[insn->vn].d[0];
+        cpu->v[insn->vd].d[0] = val;
+        cpu->v[insn->vd].d[1] = val;
+        break;
+    }
+
+    case ARM64_INSN_FMOV_REG: {
+        cpu->v[insn->vd].d[0] = cpu->v[insn->vn].d[0];
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FMOV_GPR_TO_VEC: {
+        cpu->v[insn->vd].d[0] = cpu->x[insn->rn];
+        cpu->v[insn->vd].d[1] = 0;
+        break;
+    }
+
+    case ARM64_INSN_FMOV_VEC_TO_GPR: {
+        cpu->x[insn->rd] = cpu->v[insn->vn].d[0];
+        break;
+    }
+
     default:
         printf("❌ [Interpreter] Unknown instruction type %d at PC=0x%llx (raw=0x%08x)\n",
                insn->type, (unsigned long long)cpu->pc, insn->raw);

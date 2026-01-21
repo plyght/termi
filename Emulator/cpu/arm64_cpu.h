@@ -34,6 +34,7 @@ typedef struct {
     uint32_t fpsr;
 
     uint64_t tpidr_el0;
+    uint64_t exclusive_addr;
 
     void *mmu;
 

@@ -458,6 +458,67 @@ static int decode_load_store(uint32_t insn, arm64_insn_t *d)
         return 1;
     }
 
+    if ((insn & 0x3f20fc00) == 0x08000000) {
+        uint8_t size = BITS(insn, 31, 30);
+        d->rt = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+
+        if (BIT(insn, 15)) {
+            if (size == 3) {
+                d->type = ARM64_INSN_LDAXR;
+            } else if (size == 2) {
+                d->type = ARM64_INSN_LDAXR;
+            } else if (size == 1) {
+                d->type = ARM64_INSN_LDAXRH;
+            } else {
+                d->type = ARM64_INSN_LDAXRB;
+            }
+        } else {
+            if (size == 3) {
+                d->type = ARM64_INSN_LDXR;
+            } else if (size == 2) {
+                d->type = ARM64_INSN_LDXR;
+            } else if (size == 1) {
+                d->type = ARM64_INSN_LDAXRH;
+            } else {
+                d->type = ARM64_INSN_LDAXRB;
+            }
+        }
+        d->sf = (size == 3) ? 1 : 0;
+        return 1;
+    }
+
+    if ((insn & 0x3f20fc00) == 0x08008000) {
+        uint8_t size = BITS(insn, 31, 30);
+        d->rt = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+
+        if (BIT(insn, 15)) {
+            if (size == 3) {
+                d->type = ARM64_INSN_STLXR;
+            } else if (size == 2) {
+                d->type = ARM64_INSN_STLXR;
+            } else if (size == 1) {
+                d->type = ARM64_INSN_STLXRH;
+            } else {
+                d->type = ARM64_INSN_STLXRB;
+            }
+        } else {
+            if (size == 3) {
+                d->type = ARM64_INSN_STXR;
+            } else if (size == 2) {
+                d->type = ARM64_INSN_STXR;
+            } else if (size == 1) {
+                d->type = ARM64_INSN_STLXRH;
+            } else {
+                d->type = ARM64_INSN_STLXRB;
+            }
+        }
+        d->sf = (size == 3) ? 1 : 0;
+        return 1;
+    }
+
     return 0;
 }
 
@@ -583,6 +644,7 @@ static int decode_data_proc_reg(uint32_t insn, arm64_insn_t *d)
         d->rd = BITS(insn, 4, 0);
         d->rn = BITS(insn, 9, 5);
         d->rm = BITS(insn, 20, 16);
+        d->shift = BITS(insn, 15, 10);
 
         uint8_t opc = BITS(insn, 30, 29);
         if (opc == 0x0) {
@@ -650,6 +712,300 @@ static int decode_data_proc_reg(uint32_t insn, arm64_insn_t *d)
         return 1;
     }
 
+    if ((insn & 0x7fe00c00) == 0x5a800000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->imm = BITS(insn, 20, 16);
+        d->cond = BITS(insn, 15, 12);
+        d->nzcv = BITS(insn, 3, 0);
+
+        if (BIT(insn, 11)) {
+            d->type = ARM64_INSN_CCMN_REG;
+        } else {
+            d->type = ARM64_INSN_CCMP_REG;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7fe00c00) == 0x7a400000) {
+        d->sf = BIT(insn, 31);
+        d->rn = BITS(insn, 9, 5);
+        d->imm = BITS(insn, 20, 16);
+        d->cond = BITS(insn, 15, 12);
+        d->nzcv = BITS(insn, 3, 0);
+
+        if (BIT(insn, 11)) {
+            d->type = ARM64_INSN_CCMN_IMM;
+        } else {
+            d->type = ARM64_INSN_CCMP_IMM;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7fe00000) == 0x5a000000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+
+        uint8_t op2 = BITS(insn, 11, 10);
+        if (op2 == 0x0) {
+            d->type = ARM64_INSN_ADC;
+        } else if (op2 == 0x1) {
+            d->type = ARM64_INSN_SBC;
+        } else {
+            return 0;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7fe00000) == 0x5ac00000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+
+        uint8_t opcode = BITS(insn, 15, 10);
+        if (opcode == 0x00) {
+            d->type = ARM64_INSN_RBIT;
+        } else if (opcode == 0x01) {
+            d->type = ARM64_INSN_REV16;
+        } else if (opcode == 0x02) {
+            if (d->sf) {
+                d->type = ARM64_INSN_REV;
+            } else {
+                d->type = ARM64_INSN_REV;
+            }
+        } else if (opcode == 0x04) {
+            d->type = ARM64_INSN_CLZ;
+        } else {
+            return 0;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7f800000) == 0x2b000000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->imm = BITS(insn, 21, 10);
+        d->type = ARM64_INSN_ADDS_IMM;
+        return 1;
+    }
+
+    if ((insn & 0x7f800000) == 0x6b000000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->imm = BITS(insn, 21, 10);
+        d->type = ARM64_INSN_SUBS_IMM;
+        return 1;
+    }
+
+    if ((insn & 0x7f800000) == 0x31000000) {
+        d->sf = BIT(insn, 31);
+        d->rn = BITS(insn, 9, 5);
+        d->imm = BITS(insn, 21, 10);
+        d->type = ARM64_INSN_CMN_IMM;
+        return 1;
+    }
+
+    if ((insn & 0x7fe0001f) == 0x2b00001f) {
+        d->sf = BIT(insn, 31);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+        d->type = ARM64_INSN_CMN_REG;
+        return 1;
+    }
+
+    if ((insn & 0x7fe00000) == 0x2b000000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+        d->type = ARM64_INSN_ADDS_REG;
+        return 1;
+    }
+
+    if ((insn & 0x7fe00000) == 0x6a000000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+        d->type = ARM64_INSN_ANDS_REG;
+        return 1;
+    }
+
+    if ((insn & 0x7f20ec00) == 0x1b200000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+        d->ra = BITS(insn, 14, 10);
+
+        if (BIT(insn, 23)) {
+            d->type = ARM64_INSN_SMADDL;
+        } else {
+            d->type = ARM64_INSN_UMULL;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7fe0fc00) == 0x9b207c00) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+
+        if (BIT(insn, 23)) {
+            d->type = ARM64_INSN_SMULH;
+        } else {
+            d->type = ARM64_INSN_UMULH;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x7fe08000) == 0x9b208000) {
+        d->sf = BIT(insn, 31);
+        d->rd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->rm = BITS(insn, 20, 16);
+        d->ra = BITS(insn, 14, 10);
+        d->type = ARM64_INSN_SMULL;
+        return 1;
+    }
+
+    return 0;
+}
+
+static int decode_fp_simd(uint32_t insn, arm64_insn_t *d)
+{
+    if ((insn & 0x5f20fc00) == 0x1e204000) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->vm = BITS(insn, 20, 16);
+
+        uint8_t opcode = BITS(insn, 15, 10);
+        if (opcode == 0x02) {
+            d->type = ARM64_INSN_FADD;
+        } else if (opcode == 0x03) {
+            d->type = ARM64_INSN_FSUB;
+        } else if (opcode == 0x00) {
+            d->type = ARM64_INSN_FMUL;
+        } else if (opcode == 0x01) {
+            d->type = ARM64_INSN_FDIV;
+        } else {
+            return 0;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x5f207c00) == 0x1e204000) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+
+        uint8_t opcode = BITS(insn, 20, 15);
+        if (opcode == 0x02) {
+            d->type = ARM64_INSN_FNEG;
+        } else if (opcode == 0x01) {
+            d->type = ARM64_INSN_FABS;
+        } else {
+            return 0;
+        }
+        return 1;
+    }
+
+    if ((insn & 0x5f20fc00) == 0x1e200800) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->vm = BITS(insn, 20, 16);
+        d->type = ARM64_INSN_FCMP;
+        return 1;
+    }
+
+    if ((insn & 0x5f20fc00) == 0x1e200810) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->vm = BITS(insn, 20, 16);
+        d->type = ARM64_INSN_FCMPE;
+        return 1;
+    }
+
+    if ((insn & 0x5f200c00) == 0x1e200c00) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->vm = BITS(insn, 20, 16);
+        d->cond = BITS(insn, 15, 12);
+        d->type = ARM64_INSN_FCSEL;
+        return 1;
+    }
+
+    if ((insn & 0x5f207c00) == 0x1e224000) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->type = ARM64_INSN_FCVT;
+        return 1;
+    }
+
+    if ((insn & 0x5f20fc00) == 0x1e380000) {
+        d->ftype = BITS(insn, 23, 22);
+        d->rd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->sf = BIT(insn, 31);
+        d->type = ARM64_INSN_FCVTZS;
+        return 1;
+    }
+
+    if ((insn & 0x5f20fc00) == 0x1e220000) {
+        d->ftype = BITS(insn, 23, 22);
+        d->vd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->sf = BIT(insn, 31);
+        d->type = ARM64_INSN_SCVTF;
+        return 1;
+    }
+
+    if ((insn & 0x5f201c00) == 0x0f000400) {
+        d->vd = BITS(insn, 4, 0);
+        d->imm = BITS(insn, 20, 16) | (BITS(insn, 11, 5) << 5);
+        d->type = ARM64_INSN_MOVI;
+        return 1;
+    }
+
+    if ((insn & 0x5fe0fc00) == 0x0e000400) {
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->type = ARM64_INSN_DUP;
+        return 1;
+    }
+
+    if ((insn & 0xffe0fc00) == 0x1e204000) {
+        d->vd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->type = ARM64_INSN_FMOV_REG;
+        return 1;
+    }
+
+    if ((insn & 0x5f200400) == 0x1e200000) {
+        d->vd = BITS(insn, 4, 0);
+        d->rn = BITS(insn, 9, 5);
+        d->type = ARM64_INSN_FMOV_GPR_TO_VEC;
+        return 1;
+    }
+
+    if ((insn & 0x5f200400) == 0x1e260000) {
+        d->rd = BITS(insn, 4, 0);
+        d->vn = BITS(insn, 9, 5);
+        d->type = ARM64_INSN_FMOV_VEC_TO_GPR;
+        return 1;
+    }
+
     return 0;
 }
 
@@ -678,6 +1034,38 @@ static int decode_system(uint32_t insn, arm64_insn_t *d)
         return 1;
     }
 
+    if ((insn & 0xfff0001f) == 0xd5300000) {
+        d->rd = BITS(insn, 4, 0);
+        d->imm = BITS(insn, 20, 5);
+        d->type = ARM64_INSN_MRS;
+        return 1;
+    }
+
+    if ((insn & 0xfff0001f) == 0xd5100000) {
+        d->rt = BITS(insn, 4, 0);
+        d->imm = BITS(insn, 20, 5);
+        d->type = ARM64_INSN_MSR;
+        return 1;
+    }
+
+    if ((insn & 0xfffff0ff) == 0xd50330bf) {
+        d->imm = BITS(insn, 11, 8);
+        d->type = ARM64_INSN_DMB;
+        return 1;
+    }
+
+    if ((insn & 0xfffff0ff) == 0xd503309f) {
+        d->imm = BITS(insn, 11, 8);
+        d->type = ARM64_INSN_DSB;
+        return 1;
+    }
+
+    if ((insn & 0xfffff0ff) == 0xd50330df) {
+        d->imm = BITS(insn, 11, 8);
+        d->type = ARM64_INSN_ISB;
+        return 1;
+    }
+
     return 0;
 }
 
@@ -702,6 +1090,12 @@ int arm64_decode(uint32_t insn, arm64_insn_t *decoded)
 
     if ((op0 & 0x3) == 0x0 || (op0 & 0x3) == 0x1) {
         int ret = decode_data_proc_imm(insn, decoded);
+        if (ret)
+            return ret;
+    }
+
+    if ((op0 & 0xf) == 0x7) {
+        int ret = decode_fp_simd(insn, decoded);
         if (ret)
             return ret;
     }

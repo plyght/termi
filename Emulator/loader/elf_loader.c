@@ -301,11 +301,60 @@ int elf_load_memory_with_fs(const void *elf_data, size_t size, void *mmu_ptr, el
     printf("[ELF Loader] Mapping stack: top=0x%llx, size=%d\n", 
            (unsigned long long)STACK_TOP, STACK_SIZE);
 
-    info->stack_top = STACK_TOP - 16;
     if (arm64_mmu_map(mmu, STACK_TOP - STACK_SIZE, STACK_SIZE + 4096, PROT_READ | PROT_WRITE) < 0) {
         printf("[ELF Loader] ERROR: Stack mapping failed\n");
         return -1;
     }
+
+    uint64_t sp = STACK_TOP - 16;
+    
+    const char *argv0 = "/bin/busybox";
+    size_t argv0_len = strlen(argv0) + 1;
+    sp -= argv0_len;
+    sp &= ~0xFULL;
+    uint64_t argv0_addr = sp;
+    arm64_mmu_write(mmu, argv0_addr, argv0, argv0_len);
+    
+    #define AT_NULL 0
+    #define AT_PHDR 3
+    #define AT_PHENT 4
+    #define AT_PHNUM 5
+    #define AT_PAGESZ 6
+    #define AT_BASE 7
+    #define AT_ENTRY 9
+    
+    sp -= 16 * 10;
+    sp &= ~0xFULL;
+    uint64_t auxv_addr = sp;
+    uint64_t auxv[] = {
+        AT_PHDR, ehdr->e_phoff,
+        AT_PHENT, ehdr->e_phentsize,
+        AT_PHNUM, ehdr->e_phnum,
+        AT_PAGESZ, 4096,
+        AT_BASE, info->interp_base,
+        AT_ENTRY, ehdr->e_entry,
+        AT_NULL, 0
+    };
+    arm64_mmu_write(mmu, auxv_addr, auxv, sizeof(auxv));
+    
+    sp -= 8;
+    uint64_t null_val = 0;
+    arm64_mmu_write(mmu, sp, &null_val, 8);
+    
+    sp -= 8;
+    arm64_mmu_write(mmu, sp, &null_val, 8);
+    
+    sp -= 8;
+    arm64_mmu_write(mmu, sp, &argv0_addr, 8);
+    
+    sp -= 8;
+    uint64_t argc = 1;
+    arm64_mmu_write(mmu, sp, &argc, 8);
+    
+    sp &= ~0xFULL;
+    
+    info->stack_top = sp;
+    printf("[ELF Loader] Stack initialized at SP=0x%llx\n", (unsigned long long)sp);
 
     printf("[ELF Loader] ELF loaded successfully\n");
     return 0;
